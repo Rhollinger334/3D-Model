@@ -14,65 +14,32 @@
       height: 100vh;
       overflow: hidden;
     }
-
-    /* ── Sidebar ── */
     #sidebar {
-      width: 320px;
-      min-width: 320px;
+      width: 320px; min-width: 320px;
       background: #16213e;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       border-right: 1px solid #0f3460;
       overflow: hidden;
     }
-    #sidebar-header {
-      padding: 20px 20px 0;
-    }
-    #sidebar-header h1 {
-      font-size: 1.2rem;
-      color: #e94560;
-      margin-bottom: 4px;
-    }
-    #sidebar-header .subtitle {
-      font-size: 0.7rem;
-      color: #555;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    #sidebar-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px 20px 20px;
-    }
+    #sidebar-header { padding: 20px 20px 0; }
+    #sidebar-header h1 { font-size: 1.2rem; color: #e94560; margin-bottom: 4px; }
+    #sidebar-header .subtitle { font-size: 0.7rem; color: #555; letter-spacing: 1px; text-transform: uppercase; }
+    #sidebar-scroll { flex: 1; overflow-y: auto; padding: 12px 20px 20px; }
     #sidebar-scroll::-webkit-scrollbar { width: 6px; }
     #sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
     #sidebar-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-
     .section-label {
-      font-size: 0.7rem;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin: 18px 0 8px;
-      padding-bottom: 4px;
+      font-size: 0.7rem; color: #666; text-transform: uppercase;
+      letter-spacing: 1.5px; margin: 18px 0 8px; padding-bottom: 4px;
       border-bottom: 1px solid #1a1a4e;
     }
     .section-label:first-child { margin-top: 8px; }
-
     .model-btn {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 4px;
-      background: #0f3460;
-      border: 1px solid transparent;
-      color: #ccc;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: left;
-      font-size: 0.82rem;
-      transition: all 0.2s;
+      display: flex; align-items: center; width: 100%;
+      padding: 10px 12px; margin-bottom: 4px;
+      background: #0f3460; border: 1px solid transparent;
+      color: #ccc; border-radius: 6px; cursor: pointer;
+      text-align: left; font-size: 0.82rem; transition: all 0.2s;
     }
     .model-btn:hover { background: #143a6e; border-color: #e94560; color: #fff; }
     .model-btn.active { background: #e94560; border-color: #e94560; color: #fff; }
@@ -80,223 +47,108 @@
     .model-btn .label { flex: 1; }
     .model-btn .meta { font-size: 0.65rem; color: #777; margin-left: 8px; white-space: nowrap; }
     .model-btn.active .meta { color: #ffcdd2; }
-
-    /* ── Toolbar ── */
-    #toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid #1a1a4e;
-    }
+    #toolbar { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #1a1a4e; }
     .tool-btn {
-      padding: 6px 10px;
-      background: #0f3460;
-      border: 1px solid transparent;
-      color: #aaa;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.72rem;
-      transition: all 0.15s;
+      padding: 6px 10px; background: #0f3460; border: 1px solid transparent;
+      color: #aaa; border-radius: 4px; cursor: pointer; font-size: 0.72rem; transition: all 0.15s;
     }
     .tool-btn:hover { background: #143a6e; color: #fff; }
     .tool-btn.active { background: #533483; border-color: #7c4dca; color: #fff; }
-    .tool-btn .kbd {
-      font-size: 0.6rem;
-      color: #555;
-      margin-left: 4px;
-      padding: 1px 4px;
-      background: #0a0a1e;
-      border-radius: 2px;
-    }
+    .tool-btn .kbd { font-size: 0.6rem; color: #555; margin-left: 4px; padding: 1px 4px; background: #0a0a1e; border-radius: 2px; }
     .tool-btn.active .kbd { color: #b39ddb; background: #3a1f6e; }
-
-    /* ── Background Selector ── */
-    #bg-selector {
-      display: flex;
-      gap: 6px;
-      margin-top: 10px;
-    }
-    .bg-swatch {
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
+    #bg-selector { display: flex; gap: 6px; margin-top: 10px; }
+    .bg-swatch { width: 24px; height: 24px; border-radius: 4px; border: 2px solid transparent; cursor: pointer; transition: border-color 0.15s; }
     .bg-swatch:hover { border-color: #888; }
     .bg-swatch.active { border-color: #e94560; }
-
-    /* ── Measurements Panel ── */
     #measurements-btn {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      margin-top: 14px;
-      background: #533483;
-      border: 1px solid transparent;
-      color: #d0c0f0;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      transition: all 0.15s;
+      display: block; width: 100%; padding: 10px; margin-top: 14px;
+      background: #533483; border: 1px solid transparent; color: #d0c0f0;
+      border-radius: 6px; cursor: pointer; font-size: 0.82rem; transition: all 0.15s;
     }
     #measurements-btn:hover { background: #6a42a0; }
-    #measurements-panel {
-      display: none;
-      margin-top: 10px;
-    }
-    .meas-group {
-      margin-bottom: 8px;
-    }
+    #measurements-panel { display: none; margin-top: 10px; }
+    .meas-group { margin-bottom: 8px; }
     .meas-group-header {
-      display: flex;
-      align-items: center;
-      padding: 8px 10px;
-      background: #0f3460;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: #bbb;
-      transition: background 0.15s;
+      display: flex; align-items: center; padding: 8px 10px; background: #0f3460;
+      border-radius: 5px; cursor: pointer; font-size: 0.78rem; font-weight: 600; color: #bbb; transition: background 0.15s;
     }
     .meas-group-header:hover { background: #143a6e; }
-    .meas-group-header .arrow {
-      margin-right: 8px;
-      transition: transform 0.2s;
-      font-size: 0.6rem;
-    }
+    .meas-group-header .arrow { margin-right: 8px; transition: transform 0.2s; font-size: 0.6rem; }
     .meas-group-header.open .arrow { transform: rotate(90deg); }
-    .meas-group-header .count {
-      margin-left: auto;
-      font-size: 0.6rem;
-      color: #555;
-      font-weight: 400;
-    }
-    .meas-group-body {
-      display: none;
-      padding: 6px 0 6px 12px;
-      font-size: 0.72rem;
-    }
+    .meas-group-header .count { margin-left: auto; font-size: 0.6rem; color: #555; font-weight: 400; }
+    .meas-group-body { display: none; padding: 6px 0 6px 12px; font-size: 0.72rem; }
     .meas-group-body.open { display: block; }
-    .meas-entry {
-      display: flex;
-      justify-content: space-between;
-      padding: 3px 8px;
-      border-bottom: 1px solid #0d1b3e;
-    }
+    .meas-entry { display: flex; justify-content: space-between; padding: 3px 8px; border-bottom: 1px solid #0d1b3e; }
     .meas-entry:last-child { border-bottom: none; }
     .meas-key { color: #888; max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .meas-val { color: #e94560; text-align: right; max-width: 42%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
-
-    /* ── Viewer ── */
-    #viewer {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
+    #viewer { flex: 1; position: relative; overflow: hidden; }
     #canvas { width: 100%; height: 100%; display: block; }
-
-    /* ── Loading Overlay ── */
     #loading {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #888;
-      display: none;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      text-align: center; color: #888; display: none; z-index: 10;
     }
     #loading .spinner-ring {
-      width: 52px; height: 52px;
-      border: 3px solid #222;
-      border-top-color: #e94560;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 12px;
-      position: relative;
+      width: 52px; height: 52px; border: 3px solid #222; border-top-color: #e94560;
+      border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    #progress-bar-outer {
-      width: 180px;
-      height: 4px;
-      background: #222;
-      border-radius: 2px;
-      margin: 10px auto 6px;
-      overflow: hidden;
+    #progress-bar-outer { width: 180px; height: 4px; background: #222; border-radius: 2px; margin: 10px auto 6px; overflow: hidden; }
+    #progress-bar-inner { width: 0%; height: 100%; background: linear-gradient(90deg, #e94560, #7c4dca); border-radius: 2px; transition: width 0.15s; }
+    #progress-text { font-size: 0.7rem; color: #555; }
+    .hud-panel {
+      position: absolute; background: rgba(15, 20, 40, 0.88);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      padding: 14px 18px; border-radius: 10px; font-size: 0.78rem; line-height: 1.6;
+      border: 1px solid rgba(233, 69, 96, 0.15); max-width: 350px; z-index: 5;
     }
-    #progress-bar-inner {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #e94560, #7c4dca);
-      border-radius: 2px;
-      transition: width 0.15s;
-    }
-    #progress-text {
-      font-size: 0.7rem;
-      color: #555;
-    }
-
-    /* ── HUD Overlays ── */
-    #info-panel {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      background: rgba(15, 20, 40, 0.85);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 14px 18px;
-      border-radius: 10px;
-      font-size: 0.78rem;
-      line-height: 1.6;
-      border: 1px solid rgba(233, 69, 96, 0.15);
-      max-width: 350px;
-    }
-    #info-panel .filename { color: #e94560; font-weight: 600; font-size: 0.85rem; }
-    #info-panel .stat { color: #888; }
-    #info-panel .stat b { color: #ccc; font-weight: 500; }
-
+    #info-panel { bottom: 16px; left: 16px; }
+    #info-panel-right { bottom: 16px; right: 16px; display: none; }
+    .hud-panel .filename { color: #e94560; font-weight: 600; font-size: 0.85rem; }
+    .hud-panel .stat { color: #888; }
+    .hud-panel .stat b { color: #ccc; font-weight: 500; }
     #controls-hint {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: rgba(15, 20, 40, 0.85);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.7rem;
-      color: #666;
-      border: 1px solid rgba(255,255,255,0.05);
-      line-height: 1.6;
+      position: absolute; top: 16px; right: 16px; background: rgba(15, 20, 40, 0.85);
+      backdrop-filter: blur(10px); padding: 10px 14px; border-radius: 8px;
+      font-size: 0.7rem; color: #666; border: 1px solid rgba(255,255,255,0.05); line-height: 1.6; z-index: 5;
     }
     #controls-hint kbd {
-      display: inline-block;
-      padding: 1px 5px;
-      background: #0a0a1e;
-      border-radius: 3px;
-      font-size: 0.62rem;
-      color: #888;
-      margin: 0 1px;
-      font-family: monospace;
+      display: inline-block; padding: 1px 5px; background: #0a0a1e; border-radius: 3px;
+      font-size: 0.62rem; color: #888; margin: 0 1px; font-family: monospace;
     }
-
-    /* ── Screenshot flash ── */
-    #flash {
-      position: absolute;
-      inset: 0;
-      background: white;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.15s;
-    }
+    #flash { position: absolute; inset: 0; background: white; opacity: 0; pointer-events: none; transition: opacity 0.15s; }
     #flash.active { opacity: 0.3; }
-
-    /* ── Fullscreen ── */
     :fullscreen #sidebar { display: none; }
     :-webkit-full-screen #sidebar { display: none; }
+    /* Compare mode */
+    #compare-overlay {
+      display: none; position: absolute; top: 0; left: 0; right: 0;
+      z-index: 8; pointer-events: none;
+    }
+    #compare-overlay.active { display: flex; }
+    #compare-divider {
+      position: absolute; top: 0; bottom: 0; left: 50%;
+      width: 2px; background: rgba(233, 69, 96, 0.5);
+      transform: translateX(-50%); z-index: 9;
+    }
+    .compare-select-wrap {
+      flex: 1; display: flex; justify-content: center; padding: 12px; pointer-events: auto;
+    }
+    .compare-select {
+      background: rgba(15, 20, 40, 0.9); backdrop-filter: blur(12px);
+      border: 1px solid rgba(233, 69, 96, 0.3); color: #e0e0e0;
+      padding: 8px 12px; border-radius: 8px; font-size: 0.78rem;
+      font-family: inherit; cursor: pointer; min-width: 180px;
+    }
+    .compare-select option { background: #16213e; color: #e0e0e0; }
+    .compare-label {
+      position: absolute; bottom: 60px; background: rgba(15, 20, 40, 0.85);
+      backdrop-filter: blur(10px); padding: 6px 14px; border-radius: 6px;
+      font-size: 0.72rem; color: #e94560; font-weight: 600; z-index: 10;
+      border: 1px solid rgba(233, 69, 96, 0.2);
+    }
+    #compare-label-left { left: 16px; }
+    #compare-label-right { right: 16px; }
   </style>
 </head>
 <body>
@@ -306,7 +158,6 @@
       <div class="subtitle">Overwatch Model Archive</div>
     </div>
     <div id="sidebar-scroll">
-
       <div class="section-label">Overwatch 1</div>
       <button class="model-btn" data-model="models/OW1/Widowmaker_OW1_Textured_Default.glb" data-key="ow1_full">
         <span class="icon">&#9670;</span><span class="label">Default Skin</span><span class="meta">1.4 MB</span>
@@ -323,7 +174,6 @@
       <button class="model-btn" data-model="models/OW1/Widowmaker_OW1_Head_Only.glb" data-key="ow1_head">
         <span class="icon">&#9671;</span><span class="label">Head Only</span><span class="meta">256 KB</span>
       </button>
-
       <div class="section-label">Overwatch 2 &mdash; Talon</div>
       <button class="model-btn" data-model="models/OW2_Talon/Widowmaker_Talon_Full.glb" data-key="talon_full">
         <span class="icon">&#9670;</span><span class="label">Talon Full Body</span><span class="meta">6.4 MB</span>
@@ -331,23 +181,19 @@
       <button class="model-btn" data-model="models/OW2_Talon/Widowmaker_Talon_Head.glb" data-key="talon_head">
         <span class="icon">&#9670;</span><span class="label">Talon Head</span><span class="meta">4.4 MB</span>
       </button>
-
       <div class="section-label">Overwatch 2 &mdash; Base</div>
       <button class="model-btn" data-model="models/OW2/Widowmaker_Head_No_Helmet.glb" data-key="head_no_helmet">
         <span class="icon">&#9671;</span><span class="label">Head (No Helmet)</span><span class="meta">471 KB</span>
       </button>
-
-      <!-- Toolbar -->
       <div id="toolbar">
         <button class="tool-btn" id="btn-wireframe">Wireframe <span class="kbd">W</span></button>
         <button class="tool-btn" id="btn-rotate">Auto-Rotate <span class="kbd">R</span></button>
         <button class="tool-btn" id="btn-normals">Normals <span class="kbd">N</span></button>
+        <button class="tool-btn" id="btn-compare">Compare <span class="kbd">C</span></button>
         <button class="tool-btn" id="btn-screenshot">Screenshot <span class="kbd">S</span></button>
         <button class="tool-btn" id="btn-fullscreen">Fullscreen <span class="kbd">F</span></button>
         <button class="tool-btn" id="btn-reset">Reset Camera <span class="kbd">0</span></button>
       </div>
-
-      <!-- Background options -->
       <div class="section-label">Background</div>
       <div id="bg-selector">
         <div class="bg-swatch active" data-bg="dark" style="background:#1a1a2e;" title="Dark"></div>
@@ -357,13 +203,10 @@
         <div class="bg-swatch" data-bg="light" style="background:#d0d0d0;" title="Light"></div>
         <div class="bg-swatch" data-bg="white" style="background:#ffffff; border:1px solid #666;" title="White"></div>
       </div>
-
-      <!-- Measurements -->
       <button id="measurements-btn">Measurements</button>
       <div id="measurements-panel"></div>
     </div>
   </div>
-
   <div id="viewer">
     <canvas id="canvas"></canvas>
     <div id="loading">
@@ -372,19 +215,31 @@
       <div id="progress-bar-outer"><div id="progress-bar-inner"></div></div>
       <div id="progress-text">0%</div>
     </div>
-    <div id="info-panel">Select a model from the sidebar to begin.</div>
+    <div class="hud-panel" id="info-panel">Select a model from the sidebar to begin.</div>
+    <div class="hud-panel" id="info-panel-right"></div>
     <div id="controls-hint">
       <kbd>LMB</kbd> Rotate &bull; <kbd>Scroll</kbd> Zoom &bull; <kbd>RMB</kbd> Pan<br>
-      <kbd>1</kbd>-<kbd>8</kbd> Models &bull; <kbd>W</kbd> Wire &bull; <kbd>R</kbd> Rotate &bull; <kbd>S</kbd> Screenshot
+      <kbd>1</kbd>-<kbd>8</kbd> Models &bull; <kbd>W</kbd> Wire &bull; <kbd>R</kbd> Rotate &bull; <kbd>C</kbd> Compare &bull; <kbd>S</kbd> Screenshot
     </div>
+    <div id="compare-overlay">
+      <div class="compare-select-wrap">
+        <select class="compare-select" id="compare-left"></select>
+      </div>
+      <div class="compare-select-wrap">
+        <select class="compare-select" id="compare-right"></select>
+      </div>
+    </div>
+    <div id="compare-divider" style="display:none;"></div>
+    <span class="compare-label" id="compare-label-left" style="display:none;"></span>
+    <span class="compare-label" id="compare-label-right" style="display:none;"></span>
     <div id="flash"></div>
   </div>
 
   <script type="importmap">
   {
     "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
     }
   }
   </script>
@@ -399,41 +254,64 @@
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
+    // ── Model registry ──
+    const MODEL_LIST = [
+      { path: 'models/OW1/Widowmaker_OW1_Textured_Default.glb', name: 'OW1 Default Skin' },
+      { path: 'models/OW1/Widowmaker_OW1_Textured_Noire.glb', name: 'OW1 Noire Skin' },
+      { path: 'models/OW1/Widowmaker_OW1_Full_Body.glb', name: 'OW1 Full Body' },
+      { path: 'models/OW1/Widowmaker_OW1_Body_Only.glb', name: 'OW1 Body Only' },
+      { path: 'models/OW1/Widowmaker_OW1_Head_Only.glb', name: 'OW1 Head Only' },
+      { path: 'models/OW2_Talon/Widowmaker_Talon_Full.glb', name: 'OW2 Talon Full' },
+      { path: 'models/OW2_Talon/Widowmaker_Talon_Head.glb', name: 'OW2 Talon Head' },
+      { path: 'models/OW2/Widowmaker_Head_No_Helmet.glb', name: 'OW2 Head (No Helmet)' },
+    ];
+
     // ── Elements ──
     const canvas = document.getElementById('canvas');
     const loadingEl = document.getElementById('loading');
     const infoPanel = document.getElementById('info-panel');
+    const infoPanelRight = document.getElementById('info-panel-right');
     const progressBar = document.getElementById('progress-bar-inner');
     const progressText = document.getElementById('progress-text');
     const flashEl = document.getElementById('flash');
+    const compareOverlay = document.getElementById('compare-overlay');
+    const compareDivider = document.getElementById('compare-divider');
+    const compareLabelLeft = document.getElementById('compare-label-left');
+    const compareLabelRight = document.getElementById('compare-label-right');
+    const compareLeftSelect = document.getElementById('compare-left');
+    const compareRightSelect = document.getElementById('compare-right');
+
+    // Populate compare selects
+    MODEL_LIST.forEach((m, i) => {
+      compareLeftSelect.innerHTML += `<option value="${i}">${m.name}</option>`;
+      compareRightSelect.innerHTML += `<option value="${i}">${m.name}</option>`;
+    });
+    compareRightSelect.value = '5'; // Default right to Talon
 
     // ── Renderer ──
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0;
+    renderer.toneMappingExposure = 1.1;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // ── Scene ──
+    // ── Scenes (main + compare right) ──
     const scene = new THREE.Scene();
-    const bgColors = {
-      dark: 0x1a1a2e,
-      midnight: 0x0a0a14,
-      charcoal: 0x2a2a2a,
-      slate: 0x3a3f4b,
-      light: 0xd0d0d0,
-      white: 0xffffff,
-    };
-    scene.background = new THREE.Color(bgColors.dark);
+    const sceneRight = new THREE.Scene();
+    const bgColors = { dark: 0x1a1a2e, midnight: 0x0a0a14, charcoal: 0x2a2a2a, slate: 0x3a3f4b, light: 0xd0d0d0, white: 0xffffff };
+    let currentBg = 0x1a1a2e;
+    scene.background = new THREE.Color(currentBg);
+    sceneRight.background = new THREE.Color(currentBg);
 
-    // ── Environment Map (HDR-quality studio lighting) ──
+    // ── Environment Map ──
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
     pmremGenerator.compileEquirectangularShader();
-    const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+    const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.01).texture;
     scene.environment = envTexture;
+    sceneRight.environment = envTexture;
 
     // ── Camera ──
     const camera = new THREE.PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.01, 200);
@@ -448,62 +326,73 @@
     controls.maxDistance = 20;
     controls.update();
 
-    // ── Lights ──
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-    scene.add(ambientLight);
+    // ── Lighting setup (shared function) ──
+    function addLights(targetScene) {
+      const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+      targetScene.add(ambient);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    keyLight.position.set(4, 6, 4);
-    keyLight.castShadow = true;
-    keyLight.shadow.mapSize.set(2048, 2048);
-    keyLight.shadow.camera.near = 0.1;
-    keyLight.shadow.camera.far = 30;
-    keyLight.shadow.camera.left = -5;
-    keyLight.shadow.camera.right = 5;
-    keyLight.shadow.camera.top = 5;
-    keyLight.shadow.camera.bottom = -5;
-    keyLight.shadow.bias = -0.0005;
-    scene.add(keyLight);
+      // Key light (warm white, main shadow caster)
+      const key = new THREE.DirectionalLight(0xfff5e6, 1.8);
+      key.position.set(4, 7, 4);
+      key.castShadow = true;
+      key.shadow.mapSize.set(4096, 4096);
+      key.shadow.camera.near = 0.1;
+      key.shadow.camera.far = 40;
+      key.shadow.camera.left = -6;
+      key.shadow.camera.right = 6;
+      key.shadow.camera.top = 6;
+      key.shadow.camera.bottom = -6;
+      key.shadow.bias = -0.0003;
+      key.shadow.normalBias = 0.02;
+      targetScene.add(key);
+      targetScene.userData.keyLight = key;
 
-    const fillLight = new THREE.DirectionalLight(0x8090c0, 0.5);
-    fillLight.position.set(-3, 3, -2);
-    scene.add(fillLight);
+      // Fill light (cool blue)
+      const fill = new THREE.DirectionalLight(0x80a0d0, 0.6);
+      fill.position.set(-4, 4, -2);
+      targetScene.add(fill);
 
-    const rimLight = new THREE.DirectionalLight(0xffc0a0, 0.4);
-    rimLight.position.set(-1, 2, -4);
-    scene.add(rimLight);
+      // Rim light (warm backlight for edge definition)
+      const rim = new THREE.DirectionalLight(0xffb080, 0.5);
+      rim.position.set(-1, 3, -5);
+      targetScene.add(rim);
 
-    // ── Ground Plane (shadow receiver) ──
-    const groundGeo = new THREE.PlaneGeometry(20, 20);
-    const groundMat = new THREE.ShadowMaterial({ opacity: 0.25 });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    scene.add(ground);
+      // Top light (subtle downward for hair/helmet highlights)
+      const top = new THREE.DirectionalLight(0xd0d0ff, 0.3);
+      top.position.set(0, 8, 0);
+      targetScene.add(top);
 
-    // ── Grid ──
-    const grid = new THREE.GridHelper(10, 20, 0x333366, 0x1a1a3e);
-    grid.material.transparent = true;
-    grid.material.opacity = 0.4;
-    scene.add(grid);
+      // Bounce light (subtle upward fill to soften under-chin shadows)
+      const bounce = new THREE.DirectionalLight(0x404060, 0.2);
+      bounce.position.set(0, -2, 2);
+      targetScene.add(bounce);
+
+      // Ground plane for shadows
+      const groundGeo = new THREE.PlaneGeometry(20, 20);
+      const groundMat = new THREE.ShadowMaterial({ opacity: 0.3 });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      ground.receiveShadow = true;
+      targetScene.add(ground);
+
+      // Grid
+      const grid = new THREE.GridHelper(10, 20, 0x333366, 0x1a1a3e);
+      grid.material.transparent = true;
+      grid.material.opacity = 0.35;
+      targetScene.add(grid);
+    }
+    addLights(scene);
+    addLights(sceneRight);
 
     // ── Post-Processing ──
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-
     const bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(canvas.clientWidth, canvas.clientHeight),
-      0.15,  // strength
-      0.4,   // radius
-      0.85   // threshold
+      new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.08, 0.3, 0.9
     );
     composer.addPass(bloomPass);
-
-    const smaaPass = new SMAAPass(canvas.clientWidth, canvas.clientHeight);
-    composer.addPass(smaaPass);
-
-    const outputPass = new OutputPass();
-    composer.addPass(outputPass);
+    composer.addPass(new SMAAPass(canvas.clientWidth, canvas.clientHeight));
+    composer.addPass(new OutputPass());
 
     // ── State ──
     const loader = new GLTFLoader();
@@ -512,128 +401,178 @@
     let wireframeOn = false;
     let normalsOn = false;
     let autoRotate = false;
-    let modelDataCache = null;
+    let compareMode = false;
+    let compareModelLeft = null;
+    let compareModelRight = null;
+    let compareLeftSize = new THREE.Vector3();
+    let compareRightSize = new THREE.Vector3();
 
-    // ── Load Model ──
+    // ── Fix materials (CRITICAL for transparency bug) ──
+    function fixMaterials(obj) {
+      obj.traverse(child => {
+        if (!child.isMesh) return;
+        child.castShadow = true;
+        child.receiveShadow = true;
+        const mats = Array.isArray(child.material) ? child.material : [child.material];
+        mats.forEach(mat => {
+          // Fix transparency - game exports often have bad alpha
+          mat.transparent = false;
+          mat.opacity = 1.0;
+          mat.depthWrite = true;
+          mat.side = THREE.DoubleSide;
+          mat.alphaTest = 0;
+          if (mat.alphaMap) mat.alphaMap = null;
+
+          // Enhance PBR quality
+          if (mat.isMeshStandardMaterial || mat.isMeshPhysicalMaterial) {
+            mat.envMapIntensity = 1.0;
+            // If untextured, give it a nice material look
+            if (!mat.map) {
+              mat.roughness = Math.max(mat.roughness, 0.4);
+              mat.metalness = Math.min(mat.metalness + 0.05, 0.3);
+              mat.envMapIntensity = 1.2;
+            } else {
+              // Textured models: ensure good texture quality
+              if (mat.map) {
+                mat.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
+              }
+              if (mat.normalMap) {
+                mat.normalMap.anisotropy = renderer.capabilities.getMaxAnisotropy();
+              }
+            }
+          }
+          mat.needsUpdate = true;
+        });
+      });
+    }
+
+    // ── Build info HUD ──
+    function buildInfoHTML(model, path) {
+      let meshCount = 0, vertexCount = 0, triangleCount = 0, hasTextures = false;
+      model.traverse(child => {
+        if (child.isMesh) {
+          meshCount++;
+          vertexCount += child.geometry.attributes.position.count;
+          triangleCount += child.geometry.index ? child.geometry.index.count / 3 : child.geometry.attributes.position.count / 3;
+          if (child.material.map || (Array.isArray(child.material) && child.material.some(m => m.map))) hasTextures = true;
+        }
+      });
+      const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
+      const fileName = path.split('/').pop().replace('.glb', '');
+      return `<div class="filename">${fileName}</div>` +
+        `<div class="stat"><b>${meshCount}</b> meshes &bull; <b>${vertexCount.toLocaleString()}</b> verts &bull; <b>${Math.round(triangleCount).toLocaleString()}</b> tris</div>` +
+        `<div class="stat">Bounds: <b>${size.x.toFixed(2)}</b> &times; <b>${size.y.toFixed(2)}</b> &times; <b>${size.z.toFixed(2)}</b></div>` +
+        `<div class="stat">Textures: <b>${hasTextures ? 'Yes' : 'None'}</b></div>`;
+    }
+
+    // ── Center model in scene ──
+    function centerModel(model, sizeOut) {
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(sizeOut);
+      model.position.sub(center);
+      model.position.y += size.y / 2;
+      return size;
+    }
+
+    // ── Fit camera to model ──
+    function fitCamera(size) {
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const fitDist = maxDim / (2 * Math.tan((camera.fov * Math.PI) / 360));
+      controls.target.set(0, size.y / 2, 0);
+      camera.position.set(0, size.y * 0.6, fitDist * 1.4);
+      controls.update();
+      // Fit shadow camera
+      const kl = scene.userData.keyLight;
+      if (kl) {
+        kl.shadow.camera.left = -maxDim * 1.2;
+        kl.shadow.camera.right = maxDim * 1.2;
+        kl.shadow.camera.top = maxDim * 1.8;
+        kl.shadow.camera.bottom = -maxDim * 0.5;
+        kl.shadow.camera.updateProjectionMatrix();
+      }
+    }
+
+    // ── Dispose model ──
+    function disposeModel(model) {
+      if (!model) return;
+      model.traverse(child => {
+        if (child.isMesh) {
+          child.geometry.dispose();
+          const mats = Array.isArray(child.material) ? child.material : [child.material];
+          mats.forEach(m => {
+            m.map?.dispose(); m.normalMap?.dispose();
+            m.roughnessMap?.dispose(); m.metalnessMap?.dispose();
+            m.emissiveMap?.dispose(); m.aoMap?.dispose();
+            m.dispose();
+          });
+        }
+      });
+    }
+
+    // ── Load Model (single view) ──
     function loadModel(path) {
       loadingEl.style.display = 'block';
       progressBar.style.width = '0%';
       progressText.textContent = '0%';
+      if (currentModel) { scene.remove(currentModel); disposeModel(currentModel); currentModel = null; }
 
-      // Dispose previous
-      if (currentModel) {
-        scene.remove(currentModel);
-        currentModel.traverse(child => {
-          if (child.isMesh) {
-            child.geometry.dispose();
-            if (Array.isArray(child.material)) {
-              child.material.forEach(m => { m.map?.dispose(); m.dispose(); });
-            } else {
-              child.material.map?.dispose();
-              child.material.normalMap?.dispose();
-              child.material.roughnessMap?.dispose();
-              child.material.metalnessMap?.dispose();
-              child.material.dispose();
-            }
-          }
-        });
-        currentModel = null;
-      }
-
-      loader.load(
-        path,
+      loader.load(path,
         (gltf) => {
           currentModel = gltf.scene;
-
-          // Enable shadows on all meshes
-          currentModel.traverse(child => {
-            if (child.isMesh) {
-              child.castShadow = true;
-              child.receiveShadow = true;
-
-              // Improve material quality
-              if (child.material) {
-                const mat = child.material;
-                if (mat.isMeshStandardMaterial || mat.isMeshPhysicalMaterial) {
-                  mat.envMapIntensity = 0.8;
-                }
-              }
-            }
-          });
-
-          // Apply wireframe if active
+          fixMaterials(currentModel);
           if (wireframeOn) setWireframe(currentModel, true);
-
+          if (normalsOn) setNormals(currentModel, true);
           scene.add(currentModel);
-
-          // Center and fit
-          const box = new THREE.Box3().setFromObject(currentModel);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(currentModelSize);
-          const maxDim = Math.max(size.x, size.y, size.z);
-
-          currentModel.position.sub(center);
-          currentModel.position.y += size.y / 2;
-
-          // Adjust ground and grid
-          ground.position.y = 0;
-          grid.position.y = 0;
-
-          // Fit camera
-          const fitDist = maxDim / (2 * Math.tan((camera.fov * Math.PI) / 360));
-          controls.target.set(0, size.y / 2, 0);
-          camera.position.set(0, size.y * 0.6, fitDist * 1.4);
-          controls.update();
-
-          // Shadow camera fit
-          keyLight.shadow.camera.left = -maxDim;
-          keyLight.shadow.camera.right = maxDim;
-          keyLight.shadow.camera.top = maxDim * 1.5;
-          keyLight.shadow.camera.bottom = -maxDim * 0.5;
-          keyLight.shadow.camera.updateProjectionMatrix();
-
-          // Build info HUD
-          let meshCount = 0, vertexCount = 0, triangleCount = 0, hasTextures = false;
-          currentModel.traverse(child => {
-            if (child.isMesh) {
-              meshCount++;
-              vertexCount += child.geometry.attributes.position.count;
-              if (child.geometry.index) {
-                triangleCount += child.geometry.index.count / 3;
-              } else {
-                triangleCount += child.geometry.attributes.position.count / 3;
-              }
-              if (child.material.map) hasTextures = true;
-            }
-          });
-
-          const fileName = path.split('/').pop().replace('.glb', '');
-          infoPanel.innerHTML =
-            `<div class="filename">${fileName}</div>` +
-            `<div class="stat"><b>${meshCount}</b> meshes &bull; <b>${vertexCount.toLocaleString()}</b> verts &bull; <b>${Math.round(triangleCount).toLocaleString()}</b> tris</div>` +
-            `<div class="stat">Bounds: <b>${size.x.toFixed(2)}</b> &times; <b>${size.y.toFixed(2)}</b> &times; <b>${size.z.toFixed(2)}</b></div>` +
-            `<div class="stat">Textures: <b>${hasTextures ? 'Yes' : 'None (wireframe/untextured)'}</b></div>`;
-
+          const size = centerModel(currentModel, currentModelSize);
+          fitCamera(size);
+          infoPanel.innerHTML = buildInfoHTML(currentModel, path);
           loadingEl.style.display = 'none';
         },
-        // Progress callback
         (event) => {
           if (event.lengthComputable) {
             const pct = Math.round((event.loaded / event.total) * 100);
             progressBar.style.width = pct + '%';
             progressText.textContent = pct + '%';
           } else {
-            const mb = (event.loaded / 1024 / 1024).toFixed(1);
-            progressText.textContent = `${mb} MB loaded`;
+            progressText.textContent = `${(event.loaded / 1024 / 1024).toFixed(1)} MB`;
             progressBar.style.width = '60%';
           }
         },
-        // Error callback
         (err) => {
           loadingEl.style.display = 'none';
-          infoPanel.innerHTML = `<div class="filename" style="color:#ff6b6b;">Error loading model</div><div class="stat">${err.message || 'Unknown error'}</div>`;
+          infoPanel.innerHTML = `<div class="filename" style="color:#ff6b6b;">Error</div><div class="stat">${err.message || 'Unknown'}</div>`;
         }
       );
+    }
+
+    // ── Load model into a specific scene (for compare) ──
+    function loadModelIntoScene(path, targetScene, side) {
+      return new Promise((resolve) => {
+        loadingEl.style.display = 'block';
+        progressBar.style.width = '0%';
+        progressText.textContent = `Loading ${side}...`;
+        loader.load(path,
+          (gltf) => {
+            const model = gltf.scene;
+            fixMaterials(model);
+            targetScene.add(model);
+            const sizeVec = side === 'left' ? compareLeftSize : compareRightSize;
+            centerModel(model, sizeVec);
+            loadingEl.style.display = 'none';
+            resolve(model);
+          },
+          (event) => {
+            if (event.lengthComputable) {
+              const pct = Math.round((event.loaded / event.total) * 100);
+              progressBar.style.width = pct + '%';
+              progressText.textContent = `${side}: ${pct}%`;
+            }
+          },
+          () => { loadingEl.style.display = 'none'; resolve(null); }
+        );
+      });
     }
 
     // ── Wireframe Toggle ──
@@ -641,11 +580,8 @@
       if (!obj) return;
       obj.traverse(child => {
         if (child.isMesh) {
-          if (Array.isArray(child.material)) {
-            child.material.forEach(m => { m.wireframe = on; });
-          } else {
-            child.material.wireframe = on;
-          }
+          const mats = Array.isArray(child.material) ? child.material : [child.material];
+          mats.forEach(m => { m.wireframe = on; });
         }
       });
     }
@@ -682,34 +618,92 @@
 
     // ── Reset Camera ──
     function resetCamera() {
-      if (!currentModel) return;
-      const maxDim = Math.max(currentModelSize.x, currentModelSize.y, currentModelSize.z);
-      const fitDist = maxDim / (2 * Math.tan((camera.fov * Math.PI) / 360));
-      controls.target.set(0, currentModelSize.y / 2, 0);
-      camera.position.set(0, currentModelSize.y * 0.6, fitDist * 1.4);
-      controls.update();
+      const size = compareMode ? compareLeftSize : currentModelSize;
+      if (size.length() === 0) return;
+      fitCamera(size);
     }
+
+    // ── Compare Mode ──
+    async function enterCompareMode() {
+      compareMode = true;
+      document.getElementById('btn-compare').classList.add('active');
+      compareOverlay.classList.add('active');
+      compareDivider.style.display = 'block';
+      compareLabelLeft.style.display = 'block';
+      compareLabelRight.style.display = 'block';
+      infoPanelRight.style.display = 'block';
+
+      // Hide single-mode model
+      if (currentModel) { scene.remove(currentModel); disposeModel(currentModel); currentModel = null; }
+
+      await loadCompareModels();
+    }
+
+    function exitCompareMode() {
+      compareMode = false;
+      document.getElementById('btn-compare').classList.remove('active');
+      compareOverlay.classList.remove('active');
+      compareDivider.style.display = 'none';
+      compareLabelLeft.style.display = 'none';
+      compareLabelRight.style.display = 'none';
+      infoPanelRight.style.display = 'none';
+
+      // Clean up compare models
+      if (compareModelLeft) { scene.remove(compareModelLeft); disposeModel(compareModelLeft); compareModelLeft = null; }
+      if (compareModelRight) { sceneRight.remove(compareModelRight); disposeModel(compareModelRight); compareModelRight = null; }
+
+      infoPanel.innerHTML = 'Select a model from the sidebar.';
+    }
+
+    async function loadCompareModels() {
+      const leftIdx = parseInt(compareLeftSelect.value);
+      const rightIdx = parseInt(compareRightSelect.value);
+      const leftModel = MODEL_LIST[leftIdx];
+      const rightModel = MODEL_LIST[rightIdx];
+
+      // Clean previous
+      if (compareModelLeft) { scene.remove(compareModelLeft); disposeModel(compareModelLeft); }
+      if (compareModelRight) { sceneRight.remove(compareModelRight); disposeModel(compareModelRight); }
+
+      compareLabelLeft.textContent = leftModel.name;
+      compareLabelRight.textContent = rightModel.name;
+
+      // Load both
+      compareModelLeft = await loadModelIntoScene(leftModel.path, scene, 'left');
+      compareModelRight = await loadModelIntoScene(rightModel.path, sceneRight, 'right');
+
+      if (compareModelLeft) {
+        infoPanel.innerHTML = buildInfoHTML(compareModelLeft, leftModel.path);
+        fitCamera(compareLeftSize);
+      }
+      if (compareModelRight) {
+        infoPanelRight.innerHTML = buildInfoHTML(compareModelRight, rightModel.path);
+      }
+    }
+
+    compareLeftSelect.addEventListener('change', () => { if (compareMode) loadCompareModels(); });
+    compareRightSelect.addEventListener('change', () => { if (compareMode) loadCompareModels(); });
 
     // ── Model Buttons ──
     const modelBtns = document.querySelectorAll('.model-btn');
-    modelBtns.forEach((btn, i) => {
+    modelBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
+        if (compareMode) exitCompareMode();
         modelBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        // Reset visual modes on model switch
-        if (normalsOn) { normalsOn = false; document.getElementById('btn-normals').classList.remove('active'); }
+        if (normalsOn) { normalsOn = false; document.getElementById('btn-normals').classList.remove('active'); savedMaterials.clear(); }
         if (wireframeOn) { wireframeOn = false; document.getElementById('btn-wireframe').classList.remove('active'); }
-        savedMaterials.clear();
         loadModel(btn.dataset.model);
       });
     });
 
-    // ── Toolbar Buttons ──
+    // ── Toolbar ──
     document.getElementById('btn-wireframe').addEventListener('click', () => {
       wireframeOn = !wireframeOn;
       document.getElementById('btn-wireframe').classList.toggle('active', wireframeOn);
       if (normalsOn) { normalsOn = false; setNormals(currentModel, false); document.getElementById('btn-normals').classList.remove('active'); }
       setWireframe(currentModel, wireframeOn);
+      if (compareMode) { setWireframe(compareModelLeft, wireframeOn); setWireframe(compareModelRight, wireframeOn); }
     });
 
     document.getElementById('btn-rotate').addEventListener('click', () => {
@@ -726,14 +720,16 @@
       setNormals(currentModel, normalsOn);
     });
 
+    document.getElementById('btn-compare').addEventListener('click', () => {
+      if (compareMode) exitCompareMode();
+      else enterCompareMode();
+    });
+
     document.getElementById('btn-screenshot').addEventListener('click', takeScreenshot);
 
     document.getElementById('btn-fullscreen').addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.body.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
+      if (!document.fullscreenElement) document.body.requestFullscreen();
+      else document.exitFullscreen();
     });
 
     document.getElementById('btn-reset').addEventListener('click', resetCamera);
@@ -743,56 +739,41 @@
       swatch.addEventListener('click', () => {
         document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
         swatch.classList.add('active');
-        scene.background = new THREE.Color(bgColors[swatch.dataset.bg]);
+        currentBg = bgColors[swatch.dataset.bg];
+        scene.background = new THREE.Color(currentBg);
+        sceneRight.background = new THREE.Color(currentBg);
       });
     });
 
     // ── Keyboard Shortcuts ──
     document.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
       const key = e.key.toLowerCase();
-
-      // Number keys 1-8 for model selection
-      if (key >= '1' && key <= '8') {
-        const idx = parseInt(key) - 1;
-        if (idx < modelBtns.length) modelBtns[idx].click();
-        return;
-      }
-
+      if (key >= '1' && key <= '8') { const idx = parseInt(key) - 1; if (idx < modelBtns.length) modelBtns[idx].click(); return; }
       switch (key) {
         case 'w': document.getElementById('btn-wireframe').click(); break;
         case 'r': document.getElementById('btn-rotate').click(); break;
         case 'n': document.getElementById('btn-normals').click(); break;
+        case 'c': document.getElementById('btn-compare').click(); break;
         case 's': e.preventDefault(); takeScreenshot(); break;
         case 'f': document.getElementById('btn-fullscreen').click(); break;
         case '0': resetCamera(); break;
       }
     });
 
-    // ── Measurements Panel (grouped & collapsible) ──
+    // ── Measurements Panel ──
     const measBtn = document.getElementById('measurements-btn');
     const measPanel = document.getElementById('measurements-panel');
     let measLoaded = false;
-
     const measLabels = {
-      meta: 'Metadata',
-      landmarks_3d: '3D Landmarks',
-      primary_distances: 'Primary Distances',
-      derived_distances: 'Derived Distances',
-      angles_degrees: 'Angles',
-      proportions: 'Proportions',
-      face_classification: 'Face Classification',
-      cross_sections: 'Cross Sections',
-      feature_contours: 'Feature Contours',
-      surface_curvature: 'Surface Curvature',
-      eye_geometry: 'Eye Geometry',
-      brow_geometry: 'Brow Geometry',
-      eyelash_geometry: 'Eyelash Geometry',
-      face_mesh: 'Face Mesh Data',
-      reconstruction_guide: 'Reconstruction Guide',
+      meta: 'Metadata', landmarks_3d: '3D Landmarks', primary_distances: 'Primary Distances',
+      derived_distances: 'Derived Distances', angles_degrees: 'Angles', proportions: 'Proportions',
+      face_classification: 'Face Classification', cross_sections: 'Cross Sections',
+      feature_contours: 'Feature Contours', surface_curvature: 'Surface Curvature',
+      eye_geometry: 'Eye Geometry', brow_geometry: 'Brow Geometry', eyelash_geometry: 'Eyelash Geometry',
+      face_mesh: 'Face Mesh Data', reconstruction_guide: 'Reconstruction Guide',
       cinematic_cross_validation: 'Cinematic Validation',
     };
-
     function renderValue(val, depth = 0) {
       if (val === null || val === undefined) return '<span style="color:#555">null</span>';
       if (typeof val === 'number') return `<span style="color:#e94560">${val}</span>`;
@@ -803,26 +784,17 @@
         if (val.length === 3 && typeof val[0] === 'number') return `[${val.map(v => typeof v === 'number' ? v.toFixed(4) : v).join(', ')}]`;
         return `[${val.length} items]`;
       }
-      if (typeof val === 'object') {
-        const keys = Object.keys(val);
-        if (keys.length > 10 && depth > 0) return `{${keys.length} properties}`;
-        return `{${keys.length} props}`;
-      }
+      if (typeof val === 'object') return `{${Object.keys(val).length} props}`;
       return String(val);
     }
-
     function buildGroupEntries(data, maxEntries = 50) {
-      let html = '';
-      let count = 0;
-
-      function addEntries(obj, prefix = '') {
+      let html = '', count = 0;
+      function add(obj, prefix = '') {
         if (count >= maxEntries) return;
         for (const [k, v] of Object.entries(obj)) {
-          if (count >= maxEntries) { html += `<div class="meas-entry"><span class="meas-key" style="color:#555">... more entries</span><span class="meas-val"></span></div>`; return; }
+          if (count >= maxEntries) { html += `<div class="meas-entry"><span class="meas-key" style="color:#555">... more</span><span class="meas-val"></span></div>`; return; }
           const key = prefix ? `${prefix}.${k}` : k;
-
           if (typeof v === 'object' && v !== null && !Array.isArray(v) && Object.keys(v).length <= 8) {
-            // Inline small objects
             for (const [k2, v2] of Object.entries(v)) {
               if (count >= maxEntries) break;
               html += `<div class="meas-entry"><span class="meas-key" title="${key}.${k2}">${key}.${k2}</span><span class="meas-val">${renderValue(v2, 1)}</span></div>`;
@@ -834,60 +806,31 @@
           }
         }
       }
-
-      if (typeof data === 'object' && data !== null) {
-        addEntries(data);
-      }
+      if (typeof data === 'object' && data !== null) add(data);
       return html;
     }
-
     measBtn.addEventListener('click', async () => {
-      if (measPanel.style.display === 'block') {
-        measPanel.style.display = 'none';
-        measBtn.textContent = 'Measurements';
-        return;
-      }
-
+      if (measPanel.style.display === 'block') { measPanel.style.display = 'none'; measBtn.textContent = 'Measurements'; return; }
       if (!measLoaded) {
         try {
           const res = await fetch('data/widowmaker_ULTIMATE_measurements.json');
           const data = await res.json();
           let html = '';
-
           for (const [section, content] of Object.entries(data)) {
             const label = measLabels[section] || section;
             const entryCount = typeof content === 'object' ? Object.keys(content).length : 1;
             const entries = typeof content === 'object' && content !== null
               ? buildGroupEntries(content, section === 'face_mesh' ? 10 : 60)
               : `<div class="meas-entry"><span class="meas-key">value</span><span class="meas-val">${renderValue(content)}</span></div>`;
-
-            html += `
-              <div class="meas-group">
-                <div class="meas-group-header" data-section="${section}">
-                  <span class="arrow">&#9654;</span>
-                  ${label}
-                  <span class="count">${entryCount}</span>
-                </div>
-                <div class="meas-group-body">${entries}</div>
-              </div>`;
+            html += `<div class="meas-group"><div class="meas-group-header" data-section="${section}"><span class="arrow">&#9654;</span>${label}<span class="count">${entryCount}</span></div><div class="meas-group-body">${entries}</div></div>`;
           }
-
           measPanel.innerHTML = html;
-
-          // Toggle handlers
-          measPanel.querySelectorAll('.meas-group-header').forEach(header => {
-            header.addEventListener('click', () => {
-              header.classList.toggle('open');
-              header.nextElementSibling.classList.toggle('open');
-            });
+          measPanel.querySelectorAll('.meas-group-header').forEach(h => {
+            h.addEventListener('click', () => { h.classList.toggle('open'); h.nextElementSibling.classList.toggle('open'); });
           });
-
           measLoaded = true;
-        } catch (e) {
-          measPanel.innerHTML = '<div style="color:#e94560;padding:12px;">Failed to load measurements.</div>';
-        }
+        } catch (e) { measPanel.innerHTML = '<div style="color:#e94560;padding:12px;">Failed to load measurements.</div>'; }
       }
-
       measPanel.style.display = 'block';
       measBtn.textContent = 'Hide Measurements';
     });
@@ -897,21 +840,41 @@
       const w = canvas.clientWidth, h = canvas.clientHeight;
       renderer.setSize(w, h);
       composer.setSize(w, h);
-      camera.aspect = w / h;
+      camera.aspect = compareMode ? (w / 2) / h : w / h;
       camera.updateProjectionMatrix();
     }
     window.addEventListener('resize', onResize);
-
-    // Handle fullscreen changes
-    document.addEventListener('fullscreenchange', () => {
-      setTimeout(onResize, 100);
-    });
+    document.addEventListener('fullscreenchange', () => setTimeout(onResize, 100));
 
     // ── Animate ──
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
-      composer.render();
+
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+
+      if (compareMode) {
+        const halfW = Math.floor(w / 2);
+        camera.aspect = halfW / h;
+        camera.updateProjectionMatrix();
+
+        renderer.setScissorTest(true);
+
+        // Left viewport
+        renderer.setViewport(0, 0, halfW, h);
+        renderer.setScissor(0, 0, halfW, h);
+        renderer.render(scene, camera);
+
+        // Right viewport
+        renderer.setViewport(halfW, 0, halfW, h);
+        renderer.setScissor(halfW, 0, halfW, h);
+        renderer.render(sceneRight, camera);
+
+        renderer.setScissorTest(false);
+        renderer.setViewport(0, 0, w, h);
+      } else {
+        composer.render();
+      }
     }
     animate();
   </script>
