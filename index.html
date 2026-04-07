@@ -407,42 +407,165 @@
     let compareLeftSize = new THREE.Vector3();
     let compareRightSize = new THREE.Vector3();
 
-    // ── Fix materials (CRITICAL for transparency bug) ──
+    // ── Cinematic material enhancement ──
+    // Widowmaker's signature skin tone
+    const SKIN_COLOR = new THREE.Color(0.84, 0.86, 0.88);    // #D7DCE1 base
+    const SKIN_SSS_TINT = new THREE.Color(0.55, 0.45, 0.65); // cool purple SSS
+    const HAIR_COLOR = new THREE.Color(0.08, 0.02, 0.18);     // deep indigo
+    const SUIT_COLOR = new THREE.Color(0.15, 0.10, 0.25);     // dark purple suit
+    const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+    function classifyMaterial(matName) {
+      const n = matName.toLowerCase();
+      if (n.includes('skin') || n.includes('face') || n.includes('tongue')) return 'skin';
+      if (n.includes('eye')) return 'eyes';
+      if (n.includes('hair') || n.includes('lash')) return 'hair';
+      if (n.includes('teeth')) return 'teeth';
+      if (n.includes('shadow')) return 'shadow';
+      // OW1 body/generic materials
+      if (n.includes('body') || n === 'ow1_material') return 'body';
+      // Talon/hex-named materials with textures get smart defaults
+      if (/^[0-9a-f]+$/.test(n)) return 'talon_part';
+      return 'default';
+    }
+
+    function upgradeToCinematic(mat, matClass) {
+      // Convert to MeshPhysicalMaterial for advanced features if not already
+      const phys = mat.isMeshPhysicalMaterial ? mat : new THREE.MeshPhysicalMaterial();
+      if (!mat.isMeshPhysicalMaterial) {
+        // Copy base properties
+        if (mat.map) phys.map = mat.map;
+        if (mat.normalMap) phys.normalMap = mat.normalMap;
+        if (mat.color) phys.color.copy(mat.color);
+        phys.side = mat.side;
+      }
+
+      switch (matClass) {
+        case 'skin':
+          phys.roughness = 0.45;
+          phys.metalness = 0.0;
+          phys.clearcoat = 0.05;
+          phys.clearcoatRoughness = 0.4;
+          phys.sheen = 0.3;
+          phys.sheenRoughness = 0.5;
+          phys.sheenColor = SKIN_SSS_TINT;
+          phys.envMapIntensity = 0.9;
+          if (!phys.map) phys.color.copy(SKIN_COLOR);
+          break;
+
+        case 'eyes':
+          phys.roughness = 0.08;
+          phys.metalness = 0.0;
+          phys.clearcoat = 1.0;
+          phys.clearcoatRoughness = 0.05;
+          phys.envMapIntensity = 1.5;
+          phys.ior = 1.4;
+          break;
+
+        case 'hair':
+          phys.roughness = 0.55;
+          phys.metalness = 0.05;
+          phys.sheen = 0.8;
+          phys.sheenRoughness = 0.3;
+          phys.sheenColor = new THREE.Color(0.2, 0.15, 0.35);
+          phys.envMapIntensity = 0.7;
+          if (!phys.map) phys.color.copy(HAIR_COLOR);
+          break;
+
+        case 'teeth':
+          phys.roughness = 0.2;
+          phys.metalness = 0.0;
+          phys.clearcoat = 0.5;
+          phys.clearcoatRoughness = 0.1;
+          phys.color.set(0.9, 0.88, 0.82);
+          phys.envMapIntensity = 0.6;
+          break;
+
+        case 'shadow':
+          phys.roughness = 1.0;
+          phys.metalness = 0.0;
+          phys.color.set(0.05, 0.03, 0.08);
+          phys.envMapIntensity = 0.0;
+          break;
+
+        case 'body':
+          // Suit/armor parts - sleek and slightly metallic
+          phys.roughness = 0.35;
+          phys.metalness = 0.15;
+          phys.clearcoat = 0.3;
+          phys.clearcoatRoughness = 0.15;
+          phys.envMapIntensity = 1.2;
+          phys.sheen = 0.15;
+          phys.sheenRoughness = 0.4;
+          phys.sheenColor = new THREE.Color(0.2, 0.15, 0.3);
+          if (!phys.map) phys.color.copy(SUIT_COLOR);
+          break;
+
+        case 'talon_part':
+          // Talon texture atlas parts - vary by region
+          phys.roughness = 0.35;
+          phys.metalness = 0.08;
+          phys.clearcoat = 0.2;
+          phys.clearcoatRoughness = 0.15;
+          phys.sheen = 0.2;
+          phys.sheenRoughness = 0.4;
+          phys.sheenColor = new THREE.Color(0.15, 0.12, 0.25);
+          phys.envMapIntensity = 1.1;
+          break;
+
+        default:
+          // Generic materials
+          phys.roughness = 0.4;
+          phys.metalness = 0.05;
+          phys.clearcoat = 0.15;
+          phys.clearcoatRoughness = 0.2;
+          phys.envMapIntensity = 1.0;
+          break;
+      }
+
+      return phys;
+    }
+
     function fixMaterials(obj) {
       obj.traverse(child => {
         if (!child.isMesh) return;
         child.castShadow = true;
         child.receiveShadow = true;
         const mats = Array.isArray(child.material) ? child.material : [child.material];
-        mats.forEach(mat => {
-          // Fix transparency - game exports often have bad alpha
-          mat.transparent = false;
-          mat.opacity = 1.0;
-          mat.depthWrite = true;
-          mat.side = THREE.DoubleSide;
-          mat.alphaTest = 0;
-          if (mat.alphaMap) mat.alphaMap = null;
+        const newMats = mats.map(mat => {
+          const matClass = classifyMaterial(mat.name || '');
 
-          // Enhance PBR quality
-          if (mat.isMeshStandardMaterial || mat.isMeshPhysicalMaterial) {
-            mat.envMapIntensity = 1.0;
-            // If untextured, give it a nice material look
-            if (!mat.map) {
-              mat.roughness = Math.max(mat.roughness, 0.4);
-              mat.metalness = Math.min(mat.metalness + 0.05, 0.3);
-              mat.envMapIntensity = 1.2;
-            } else {
-              // Textured models: ensure good texture quality
-              if (mat.map) {
-                mat.map.anisotropy = renderer.capabilities.getMaxAnisotropy();
-              }
-              if (mat.normalMap) {
-                mat.normalMap.anisotropy = renderer.capabilities.getMaxAnisotropy();
-              }
-            }
+          // Handle alpha: hair needs alphaTest, everything else is opaque
+          if (matClass === 'hair' && mat.map) {
+            mat.transparent = false;
+            mat.alphaTest = 0.5;
+            mat.depthWrite = true;
+            mat.side = THREE.DoubleSide;
+          } else {
+            mat.transparent = false;
+            mat.opacity = 1.0;
+            mat.depthWrite = true;
+            mat.side = THREE.DoubleSide;
+            mat.alphaTest = 0;
+            if (mat.alphaMap) mat.alphaMap = null;
           }
-          mat.needsUpdate = true;
+
+          // Max anisotropy on all textures
+          if (mat.map) mat.map.anisotropy = maxAniso;
+          if (mat.normalMap) mat.normalMap.anisotropy = maxAniso;
+
+          // Upgrade to cinematic PBR
+          const upgraded = upgradeToCinematic(mat, matClass);
+          upgraded.transparent = mat.transparent;
+          upgraded.alphaTest = mat.alphaTest;
+          upgraded.depthWrite = mat.depthWrite;
+          upgraded.side = mat.side;
+          upgraded.opacity = mat.opacity || 1.0;
+          upgraded.needsUpdate = true;
+          return upgraded;
         });
+
+        child.material = Array.isArray(child.material) ? newMats : newMats[0];
       });
     }
 
