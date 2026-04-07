@@ -313,6 +313,63 @@
     scene.environment = envTexture;
     sceneRight.environment = envTexture;
 
+    // ── Generated texture maps (normal, roughness, AO) ──
+    const texLoader = new THREE.TextureLoader();
+    const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+    const GENERATED_MAPS = {
+      'models/OW1/Widowmaker_OW1_Textured_Default.glb': {
+        body: { normal: 'textures/default_body_normal.jpg', roughness: 'textures/default_body_roughness.jpg', ao: 'textures/default_body_ao.jpg' },
+        eyes: { normal: 'textures/default_eye_normal.jpg', roughness: 'textures/default_eye_roughness.jpg', ao: 'textures/default_eye_ao.jpg' },
+      },
+      'models/OW1/Widowmaker_OW1_Textured_Noire.glb': {
+        body: { normal: 'textures/noire_body_normal.jpg', roughness: 'textures/noire_body_roughness.jpg', ao: 'textures/noire_body_ao.jpg' },
+        eyes: { normal: 'textures/noire_eye_normal.jpg', roughness: 'textures/noire_eye_roughness.jpg', ao: 'textures/noire_eye_ao.jpg' },
+      },
+      'models/OW2_Talon/Widowmaker_Talon_Full.glb': {
+        all: { normal: 'textures/talon_full_normal.jpg', roughness: 'textures/talon_full_roughness.jpg', ao: 'textures/talon_full_ao.jpg' },
+      },
+      'models/OW2_Talon/Widowmaker_Talon_Head.glb': {
+        all: { normal: 'textures/talon_head_normal.jpg', roughness: 'textures/talon_head_roughness.jpg', ao: 'textures/talon_head_ao.jpg' },
+      },
+    };
+
+    function loadGeneratedTexture(path) {
+      const tex = texLoader.load(path);
+      tex.colorSpace = THREE.NoColorSpace;
+      tex.anisotropy = maxAniso;
+      return tex;
+    }
+
+    function applyGeneratedMaps(obj, modelPath) {
+      const maps = GENERATED_MAPS[modelPath];
+      if (!maps) return;
+      obj.traverse(child => {
+        if (!child.isMesh) return;
+        const mats = Array.isArray(child.material) ? child.material : [child.material];
+        mats.forEach(mat => {
+          const matClass = classifyMaterial(mat.name || '');
+          let mapSet = null;
+          if (maps.all) { mapSet = maps.all; }
+          else if (matClass === 'eyes' && maps.eyes) { mapSet = maps.eyes; }
+          else if (maps.body && (matClass === 'skin' || matClass === 'body' || matClass === 'default' || matClass === 'talon_part')) { mapSet = maps.body; }
+          if (!mapSet || !mat.map) return;
+          if (mapSet.normal && !mat.normalMap) {
+            mat.normalMap = loadGeneratedTexture(mapSet.normal);
+            mat.normalScale = new THREE.Vector2(0.6, 0.6);
+          }
+          if (mapSet.roughness && !mat.roughnessMap) {
+            mat.roughnessMap = loadGeneratedTexture(mapSet.roughness);
+          }
+          if (mapSet.ao && !mat.aoMap) {
+            mat.aoMap = loadGeneratedTexture(mapSet.ao);
+            mat.aoMapIntensity = 0.7;
+          }
+          mat.needsUpdate = true;
+        });
+      });
+    }
+
     // ── Camera ──
     const camera = new THREE.PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.01, 200);
     camera.position.set(0, 1.5, 3.5);
@@ -413,7 +470,6 @@
     const SKIN_SSS_TINT = new THREE.Color(0.55, 0.45, 0.65); // cool purple SSS
     const HAIR_COLOR = new THREE.Color(0.08, 0.02, 0.18);     // deep indigo
     const SUIT_COLOR = new THREE.Color(0.15, 0.10, 0.25);     // dark purple suit
-    const maxAniso = renderer.capabilities.getMaxAnisotropy();
 
     function classifyMaterial(matName) {
       const n = matName.toLowerCase();
@@ -645,6 +701,7 @@
         (gltf) => {
           currentModel = gltf.scene;
           fixMaterials(currentModel);
+          applyGeneratedMaps(currentModel, path);
           if (wireframeOn) setWireframe(currentModel, true);
           if (normalsOn) setNormals(currentModel, true);
           scene.add(currentModel);
@@ -680,6 +737,7 @@
           (gltf) => {
             const model = gltf.scene;
             fixMaterials(model);
+            applyGeneratedMaps(model, path);
             targetScene.add(model);
             const sizeVec = side === 'left' ? compareLeftSize : compareRightSize;
             centerModel(model, sizeVec);
