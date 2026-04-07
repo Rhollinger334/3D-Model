@@ -196,9 +196,9 @@
       </div>
       <div class="section-label">Background</div>
       <div id="bg-selector">
-        <div class="bg-swatch active" data-bg="dark" style="background:#1a1a2e;" title="Dark"></div>
-        <div class="bg-swatch" data-bg="midnight" style="background:#0a0a14;" title="Midnight"></div>
-        <div class="bg-swatch" data-bg="charcoal" style="background:#2a2a2a;" title="Charcoal"></div>
+        <div class="bg-swatch active" data-bg="dark" style="background:#0c0c1a;" title="Cinematic"></div>
+        <div class="bg-swatch" data-bg="midnight" style="background:#060610;" title="Midnight"></div>
+        <div class="bg-swatch" data-bg="charcoal" style="background:#1a1a2a;" title="Charcoal"></div>
         <div class="bg-swatch" data-bg="slate" style="background:#3a3f4b;" title="Slate"></div>
         <div class="bg-swatch" data-bg="light" style="background:#d0d0d0;" title="Light"></div>
         <div class="bg-swatch" data-bg="white" style="background:#ffffff; border:1px solid #666;" title="White"></div>
@@ -253,6 +253,82 @@
     import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+    import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
+    // ── Cinematic Color Grading Shader (Alive style) ──
+    const CinematicGradingShader = {
+      uniforms: {
+        tDiffuse: { value: null },
+        vignetteIntensity: { value: 0.45 },
+        vignetteRoundness: { value: 0.8 },
+        exposure: { value: 1.05 },
+        contrast: { value: 1.12 },
+        saturation: { value: 1.1 },
+        // Teal-orange split toning (Alive signature look)
+        shadowTint: { value: new THREE.Vector3(0.08, 0.18, 0.25) },  // deep teal
+        highlightTint: { value: new THREE.Vector3(0.22, 0.16, 0.08) }, // warm amber
+        tintStrength: { value: 0.35 },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform float vignetteIntensity;
+        uniform float vignetteRoundness;
+        uniform float exposure;
+        uniform float contrast;
+        uniform float saturation;
+        uniform vec3 shadowTint;
+        uniform vec3 highlightTint;
+        uniform float tintStrength;
+        varying vec2 vUv;
+
+        vec3 adjustSaturation(vec3 color, float sat) {
+          float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+          return mix(vec3(luma), color, sat);
+        }
+
+        void main() {
+          vec4 texel = texture2D(tDiffuse, vUv);
+          vec3 color = texel.rgb;
+
+          // Exposure
+          color *= exposure;
+
+          // S-curve contrast (cinematic feel)
+          color = color - 0.5;
+          color = sign(color) * pow(abs(color * 2.0), vec3(1.0 / contrast)) * 0.5;
+          color = color + 0.5;
+          color = clamp(color, 0.0, 1.0);
+
+          // Split toning: teal shadows, warm highlights
+          float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+          float shadowWeight = 1.0 - smoothstep(0.0, 0.5, luma);
+          float highlightWeight = smoothstep(0.5, 1.0, luma);
+          vec3 tint = shadowTint * shadowWeight + highlightTint * highlightWeight;
+          color = mix(color, color + tint, tintStrength);
+
+          // Saturation
+          color = adjustSaturation(color, saturation);
+
+          // Vignette
+          vec2 uv = vUv * 2.0 - 1.0;
+          float dist = length(uv * vec2(vignetteRoundness, 1.0));
+          float vig = 1.0 - smoothstep(0.7, 1.8, dist) * vignetteIntensity;
+          color *= vig;
+
+          // Subtle film lift (raises blacks slightly, cinematic look)
+          color = mix(vec3(0.01, 0.012, 0.02), color, smoothstep(0.0, 0.08, color));
+
+          gl_FragColor = vec4(clamp(color, 0.0, 1.0), texel.a);
+        }
+      `
+    };
 
     // ── Model registry ──
     const MODEL_LIST = [
@@ -294,15 +370,15 @@
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 0.95; // slightly under-exposed for cinematic mood
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     // ── Scenes (main + compare right) ──
     const scene = new THREE.Scene();
     const sceneRight = new THREE.Scene();
-    const bgColors = { dark: 0x1a1a2e, midnight: 0x0a0a14, charcoal: 0x2a2a2a, slate: 0x3a3f4b, light: 0xd0d0d0, white: 0xffffff };
-    let currentBg = 0x1a1a2e;
+    const bgColors = { dark: 0x0c0c1a, midnight: 0x060610, charcoal: 0x1a1a2a, slate: 0x3a3f4b, light: 0xd0d0d0, white: 0xffffff };
+    let currentBg = 0x0c0c1a;
     scene.background = new THREE.Color(currentBg);
     sceneRight.background = new THREE.Color(currentBg);
 
@@ -383,14 +459,21 @@
     controls.maxDistance = 20;
     controls.update();
 
-    // ── Lighting setup (shared function) ──
+    // ── Cinematic "Alive" lighting setup ──
+    // Mimics the Paris rooftop night scene: cool moonlight key,
+    // teal fill, warm amber accent, strong rim for silhouette
     function addLights(targetScene) {
-      const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+      // Very dim cool ambient — night scene
+      const ambient = new THREE.AmbientLight(0x1a1a3a, 0.4);
       targetScene.add(ambient);
 
-      // Key light (warm white, main shadow caster)
-      const key = new THREE.DirectionalLight(0xfff5e6, 1.8);
-      key.position.set(4, 7, 4);
+      // Hemisphere light: cool sky + warm ground bounce
+      const hemi = new THREE.HemisphereLight(0x2a3a5a, 0x1a0a0a, 0.3);
+      targetScene.add(hemi);
+
+      // Key light — cool moonlight from upper right (the cinematic's primary source)
+      const key = new THREE.DirectionalLight(0xb0c8e8, 2.2);
+      key.position.set(3, 8, 4);
       key.castShadow = true;
       key.shadow.mapSize.set(4096, 4096);
       key.shadow.camera.near = 0.1;
@@ -404,51 +487,68 @@
       targetScene.add(key);
       targetScene.userData.keyLight = key;
 
-      // Fill light (cool blue)
-      const fill = new THREE.DirectionalLight(0x80a0d0, 0.6);
-      fill.position.set(-4, 4, -2);
+      // Fill light — deep teal, from the left (ambient city night glow)
+      const fill = new THREE.DirectionalLight(0x3a6a7a, 0.7);
+      fill.position.set(-5, 3, 1);
       targetScene.add(fill);
 
-      // Rim light (warm backlight for edge definition)
-      const rim = new THREE.DirectionalLight(0xffb080, 0.5);
-      rim.position.set(-1, 3, -5);
+      // Rim light — strong cool white backlight for that cinematic silhouette edge
+      const rim = new THREE.DirectionalLight(0x8ab8d0, 1.2);
+      rim.position.set(-2, 4, -6);
       targetScene.add(rim);
 
-      // Top light (subtle downward for hair/helmet highlights)
-      const top = new THREE.DirectionalLight(0xd0d0ff, 0.3);
-      top.position.set(0, 8, 0);
-      targetScene.add(top);
+      // Accent light — warm amber from below-right (city lights / lamp glow)
+      const accent = new THREE.DirectionalLight(0xd4935a, 0.4);
+      accent.position.set(4, 0.5, 2);
+      targetScene.add(accent);
 
-      // Bounce light (subtle upward fill to soften under-chin shadows)
-      const bounce = new THREE.DirectionalLight(0x404060, 0.2);
-      bounce.position.set(0, -2, 2);
+      // Top spotlight — subtle, for hair/helmet specular catch
+      const topSpot = new THREE.SpotLight(0x6080a0, 0.6, 20, Math.PI / 6, 0.5);
+      topSpot.position.set(0, 10, 0);
+      topSpot.target.position.set(0, 0, 0);
+      targetScene.add(topSpot);
+      targetScene.add(topSpot.target);
+
+      // Under-chin bounce — very subtle warm for SSS effect
+      const bounce = new THREE.DirectionalLight(0x2a1520, 0.15);
+      bounce.position.set(0, -3, 2);
       targetScene.add(bounce);
 
       // Ground plane for shadows
       const groundGeo = new THREE.PlaneGeometry(20, 20);
-      const groundMat = new THREE.ShadowMaterial({ opacity: 0.3 });
+      const groundMat = new THREE.ShadowMaterial({ opacity: 0.5 });
       const ground = new THREE.Mesh(groundGeo, groundMat);
       ground.rotation.x = -Math.PI / 2;
       ground.receiveShadow = true;
       targetScene.add(ground);
 
-      // Grid
-      const grid = new THREE.GridHelper(10, 20, 0x333366, 0x1a1a3e);
+      // Grid — very subtle for night mood
+      const grid = new THREE.GridHelper(10, 20, 0x1a1a3a, 0x0f0f2a);
       grid.material.transparent = true;
-      grid.material.opacity = 0.35;
+      grid.material.opacity = 0.2;
       targetScene.add(grid);
     }
     addLights(scene);
     addLights(sceneRight);
 
-    // ── Post-Processing ──
+    // ── Post-Processing (Cinematic Pipeline) ──
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
+
+    // Bloom — slightly stronger for cinematic glow on specular highlights and rim light
     const bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.08, 0.3, 0.9
+      new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.18, 0.5, 0.75
     );
     composer.addPass(bloomPass);
+
+    // SMAA anti-aliasing
     composer.addPass(new SMAAPass(canvas.clientWidth, canvas.clientHeight));
+
+    // Cinematic color grading + vignette (Alive style)
+    const gradingPass = new ShaderPass(CinematicGradingShader);
+    composer.addPass(gradingPass);
+
+    // Output
     composer.addPass(new OutputPass());
 
     // ── State ──
@@ -465,11 +565,12 @@
     let compareRightSize = new THREE.Vector3();
 
     // ── Cinematic material enhancement ──
-    // Widowmaker's signature skin tone
-    const SKIN_COLOR = new THREE.Color(0.84, 0.86, 0.88);    // #D7DCE1 base
-    const SKIN_SSS_TINT = new THREE.Color(0.55, 0.45, 0.65); // cool purple SSS
-    const HAIR_COLOR = new THREE.Color(0.08, 0.02, 0.18);     // deep indigo
-    const SUIT_COLOR = new THREE.Color(0.15, 0.10, 0.25);     // dark purple suit
+    // "Alive" cinematic color palette
+    const SKIN_COLOR = new THREE.Color(0.65, 0.68, 0.78);    // cooler blue-purple skin (cinematic)
+    const SKIN_SSS_TINT = new THREE.Color(0.35, 0.28, 0.55); // deep purple SSS (visible in thin areas)
+    const HAIR_COLOR = new THREE.Color(0.04, 0.01, 0.12);     // very deep indigo, almost black
+    const SUIT_COLOR = new THREE.Color(0.06, 0.04, 0.12);     // near-black with purple undertone
+    const EYE_GLOW = new THREE.Color(1.0, 0.75, 0.15);       // amber-gold eye color from cinematic
 
     function classifyMaterial(matName) {
       const n = matName.toLowerCase();
@@ -498,84 +599,88 @@
 
       switch (matClass) {
         case 'skin':
-          phys.roughness = 0.45;
+          // Alive cinematic skin: cool blue-purple, visible SSS in thin areas
+          phys.roughness = 0.4;
           phys.metalness = 0.0;
-          phys.clearcoat = 0.05;
-          phys.clearcoatRoughness = 0.4;
-          phys.sheen = 0.3;
-          phys.sheenRoughness = 0.5;
+          phys.clearcoat = 0.08;
+          phys.clearcoatRoughness = 0.3;
+          phys.sheen = 0.5;
+          phys.sheenRoughness = 0.4;
           phys.sheenColor = SKIN_SSS_TINT;
-          phys.envMapIntensity = 0.9;
+          phys.envMapIntensity = 1.0;
           if (!phys.map) phys.color.copy(SKIN_COLOR);
           break;
 
         case 'eyes':
-          phys.roughness = 0.08;
+          // Alive cinematic eyes: amber-gold glow, wet reflective cornea
+          phys.roughness = 0.05;
           phys.metalness = 0.0;
           phys.clearcoat = 1.0;
-          phys.clearcoatRoughness = 0.05;
-          phys.envMapIntensity = 1.5;
-          phys.ior = 1.4;
+          phys.clearcoatRoughness = 0.02;
+          phys.envMapIntensity = 2.0;
+          phys.ior = 1.45;
+          phys.emissive = EYE_GLOW;
+          phys.emissiveIntensity = 0.15;
           break;
 
         case 'hair':
-          phys.roughness = 0.55;
-          phys.metalness = 0.05;
-          phys.sheen = 0.8;
-          phys.sheenRoughness = 0.3;
-          phys.sheenColor = new THREE.Color(0.2, 0.15, 0.35);
-          phys.envMapIntensity = 0.7;
+          // Near-black indigo with cool specular highlights
+          phys.roughness = 0.45;
+          phys.metalness = 0.08;
+          phys.sheen = 1.0;
+          phys.sheenRoughness = 0.25;
+          phys.sheenColor = new THREE.Color(0.15, 0.12, 0.35);
+          phys.envMapIntensity = 0.8;
           if (!phys.map) phys.color.copy(HAIR_COLOR);
           break;
 
         case 'teeth':
-          phys.roughness = 0.2;
+          phys.roughness = 0.15;
           phys.metalness = 0.0;
-          phys.clearcoat = 0.5;
-          phys.clearcoatRoughness = 0.1;
-          phys.color.set(0.9, 0.88, 0.82);
-          phys.envMapIntensity = 0.6;
+          phys.clearcoat = 0.6;
+          phys.clearcoatRoughness = 0.08;
+          phys.color.set(0.85, 0.83, 0.78);
+          phys.envMapIntensity = 0.5;
           break;
 
         case 'shadow':
           phys.roughness = 1.0;
           phys.metalness = 0.0;
-          phys.color.set(0.05, 0.03, 0.08);
+          phys.color.set(0.02, 0.01, 0.04);
           phys.envMapIntensity = 0.0;
           break;
 
         case 'body':
-          // Suit/armor parts - sleek and slightly metallic
-          phys.roughness = 0.35;
-          phys.metalness = 0.15;
-          phys.clearcoat = 0.3;
-          phys.clearcoatRoughness = 0.15;
-          phys.envMapIntensity = 1.2;
-          phys.sheen = 0.15;
-          phys.sheenRoughness = 0.4;
-          phys.sheenColor = new THREE.Color(0.2, 0.15, 0.3);
+          // Suit: near-black, glossy, strong specular catches on rim light
+          phys.roughness = 0.2;
+          phys.metalness = 0.25;
+          phys.clearcoat = 0.5;
+          phys.clearcoatRoughness = 0.08;
+          phys.envMapIntensity = 1.5;
+          phys.sheen = 0.3;
+          phys.sheenRoughness = 0.3;
+          phys.sheenColor = new THREE.Color(0.1, 0.08, 0.2);
           if (!phys.map) phys.color.copy(SUIT_COLOR);
           break;
 
         case 'talon_part':
-          // Talon texture atlas parts - vary by region
-          phys.roughness = 0.35;
-          phys.metalness = 0.08;
-          phys.clearcoat = 0.2;
-          phys.clearcoatRoughness = 0.15;
-          phys.sheen = 0.2;
-          phys.sheenRoughness = 0.4;
-          phys.sheenColor = new THREE.Color(0.15, 0.12, 0.25);
-          phys.envMapIntensity = 1.1;
+          // Talon: similar glossy treatment
+          phys.roughness = 0.25;
+          phys.metalness = 0.15;
+          phys.clearcoat = 0.4;
+          phys.clearcoatRoughness = 0.1;
+          phys.sheen = 0.25;
+          phys.sheenRoughness = 0.35;
+          phys.sheenColor = new THREE.Color(0.1, 0.08, 0.2);
+          phys.envMapIntensity = 1.3;
           break;
 
         default:
-          // Generic materials
-          phys.roughness = 0.4;
-          phys.metalness = 0.05;
-          phys.clearcoat = 0.15;
-          phys.clearcoatRoughness = 0.2;
-          phys.envMapIntensity = 1.0;
+          phys.roughness = 0.3;
+          phys.metalness = 0.1;
+          phys.clearcoat = 0.25;
+          phys.clearcoatRoughness = 0.15;
+          phys.envMapIntensity = 1.1;
           break;
       }
 
