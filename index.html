@@ -577,7 +577,6 @@
       key.shadow.camera.bottom = -6;
       key.shadow.bias = -0.0003;
       key.shadow.normalBias = 0.02;
-      key.shadow.opacity = 0.6; // deeper shadows for dramatic contrast
       targetScene.add(key);
       targetScene.userData.keyLight = key;
 
@@ -919,10 +918,10 @@
             mat.depthWrite = true;
             mat.side = THREE.DoubleSide;
           } else if (matClass === 'showcase_cornea') {
-            // Cornea: slight transparency for wet lens layer
-            mat.transparent = true;
-            mat.opacity = 0.4;
-            mat.depthWrite = false;
+            // Cornea: wet lens layer — use transmission instead of transparency
+            mat.transparent = false;
+            mat.opacity = 1.0;
+            mat.depthWrite = true;
             mat.side = THREE.FrontSide;
             mat.alphaTest = 0;
           } else {
@@ -1075,15 +1074,20 @@
 
       loader.load(path,
         (gltf) => {
-          currentModel = gltf.scene;
-          fixMaterials(currentModel, path);
-          applyGeneratedMaps(currentModel, path);
-          if (wireframeOn) setWireframe(currentModel, true);
-          if (normalsOn) setNormals(currentModel, true);
-          scene.add(currentModel);
-          const size = centerModel(currentModel, currentModelSize);
-          fitCamera(size);
-          infoPanel.innerHTML = buildInfoHTML(currentModel, path);
+          try {
+            currentModel = gltf.scene;
+            fixMaterials(currentModel, path);
+            applyGeneratedMaps(currentModel, path);
+            if (wireframeOn) setWireframe(currentModel, true);
+            if (normalsOn) setNormals(currentModel, true);
+            scene.add(currentModel);
+            const size = centerModel(currentModel, currentModelSize);
+            fitCamera(size);
+            infoPanel.innerHTML = buildInfoHTML(currentModel, path);
+          } catch (e) {
+            console.error('Model setup error:', e);
+            infoPanel.innerHTML = `<div class="filename" style="color:#ff6b6b;">Setup Error</div><div class="stat">${e.message}</div>`;
+          }
           loadingEl.style.display = 'none';
         },
         (event) => {
@@ -1166,7 +1170,8 @@
     function showSkeleton(obj, on) {
       if (skeletonHelper) {
         scene.remove(skeletonHelper);
-        skeletonHelper.dispose();
+        if (skeletonHelper.geometry) skeletonHelper.geometry.dispose();
+        if (skeletonHelper.material) skeletonHelper.material.dispose();
         skeletonHelper = null;
       }
       if (!obj || !on) return;
