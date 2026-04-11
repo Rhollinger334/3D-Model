@@ -47,6 +47,17 @@
     .model-btn .label { flex: 1; }
     .model-btn .meta { font-size: 0.65rem; color: #777; margin-left: 8px; white-space: nowrap; }
     .model-btn.active .meta { color: #ffcdd2; }
+    .model-btn .badges { display: flex; gap: 3px; margin-top: 3px; }
+    .badge {
+      display: inline-block; padding: 1px 5px; border-radius: 3px;
+      font-size: 0.55rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .badge-rigged { background: rgba(124, 77, 202, 0.25); color: #b39ddb; border: 1px solid rgba(124, 77, 202, 0.3); }
+    .badge-textured { background: rgba(233, 69, 96, 0.2); color: #f48fb1; border: 1px solid rgba(233, 69, 96, 0.25); }
+    .badge-wireframe { background: rgba(100, 181, 246, 0.15); color: #90caf9; border: 1px solid rgba(100, 181, 246, 0.25); }
+    .model-btn.active .badge-rigged { background: rgba(124, 77, 202, 0.4); color: #e0d0ff; }
+    .model-btn.active .badge-textured { background: rgba(255, 255, 255, 0.2); color: #fff; }
+    .model-btn.active .badge-wireframe { background: rgba(100, 181, 246, 0.3); color: #e3f2fd; }
     #toolbar { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #1a1a4e; }
     .tool-btn {
       padding: 6px 10px; background: #0f3460; border: 1px solid transparent;
@@ -160,39 +171,58 @@
     <div id="sidebar-scroll">
       <div class="section-label">Showcase</div>
       <button class="model-btn" data-model="widowmaker.glb" data-key="showcase">
-        <span class="icon">&#9733;</span><span class="label">OW1 Showcase (Rigged)</span><span class="meta">3.5 MB</span>
+        <span class="icon">&#9733;</span>
+        <span class="label">OW1 Showcase<div class="badges"><span class="badge badge-rigged">Rigged</span><span class="badge badge-textured">Textured</span></div></span>
+        <span class="meta">3.5 MB</span>
       </button>
       <div class="section-label">Overwatch 1</div>
       <button class="model-btn" data-model="models/OW1/Widowmaker_OW1_Textured_Default.glb" data-key="ow1_full">
-        <span class="icon">&#9670;</span><span class="label">Default Skin</span><span class="meta">1.4 MB</span>
+        <span class="icon">&#9670;</span>
+        <span class="label">Default Skin<div class="badges"><span class="badge badge-textured">Textured</span></div></span>
+        <span class="meta">1.4 MB</span>
       </button>
       <button class="model-btn" data-model="models/OW1/Widowmaker_OW1_Textured_Noire.glb" data-key="ow1_full">
-        <span class="icon">&#9670;</span><span class="label">Noire Skin</span><span class="meta">1.4 MB</span>
+        <span class="icon">&#9670;</span>
+        <span class="label">Noire Skin<div class="badges"><span class="badge badge-textured">Textured</span></div></span>
+        <span class="meta">1.4 MB</span>
       </button>
       <button class="model-btn" data-model="models/OW1/Widowmaker_OW1_Full_Body.glb" data-key="ow1_full">
-        <span class="icon">&#9671;</span><span class="label">Full Body + Weapon</span><span class="meta">2.7 MB</span>
+        <span class="icon">&#9671;</span>
+        <span class="label">Full Body + Weapon<div class="badges"><span class="badge badge-wireframe">Mesh</span></div></span>
+        <span class="meta">2.7 MB</span>
       </button>
       <button class="model-btn" data-model="models/OW1/Widowmaker_OW1_Body_Only.glb" data-key="ow1_body">
-        <span class="icon">&#9671;</span><span class="label">Body Only</span><span class="meta">509 KB</span>
+        <span class="icon">&#9671;</span>
+        <span class="label">Body Only<div class="badges"><span class="badge badge-wireframe">Mesh</span></div></span>
+        <span class="meta">509 KB</span>
       </button>
       <button class="model-btn" data-model="models/OW1/Widowmaker_OW1_Head_Only.glb" data-key="ow1_head">
-        <span class="icon">&#9671;</span><span class="label">Head Only</span><span class="meta">256 KB</span>
+        <span class="icon">&#9671;</span>
+        <span class="label">Head Only<div class="badges"><span class="badge badge-wireframe">Mesh</span></div></span>
+        <span class="meta">256 KB</span>
       </button>
       <div class="section-label">Overwatch 2 &mdash; Talon</div>
       <button class="model-btn" data-model="models/OW2_Talon/Widowmaker_Talon_Full.glb" data-key="talon_full">
-        <span class="icon">&#9670;</span><span class="label">Talon Full Body</span><span class="meta">6.4 MB</span>
+        <span class="icon">&#9670;</span>
+        <span class="label">Talon Full Body<div class="badges"><span class="badge badge-textured">Textured</span></div></span>
+        <span class="meta">6.4 MB</span>
       </button>
       <button class="model-btn" data-model="models/OW2_Talon/Widowmaker_Talon_Head.glb" data-key="talon_head">
-        <span class="icon">&#9670;</span><span class="label">Talon Head</span><span class="meta">4.4 MB</span>
+        <span class="icon">&#9670;</span>
+        <span class="label">Talon Head<div class="badges"><span class="badge badge-textured">Textured</span></div></span>
+        <span class="meta">4.4 MB</span>
       </button>
       <div class="section-label">Overwatch 2 &mdash; Base</div>
       <button class="model-btn" data-model="models/OW2/Widowmaker_Head_No_Helmet.glb" data-key="head_no_helmet">
-        <span class="icon">&#9671;</span><span class="label">Head (No Helmet)</span><span class="meta">471 KB</span>
+        <span class="icon">&#9671;</span>
+        <span class="label">Head (No Helmet)<div class="badges"><span class="badge badge-wireframe">Mesh</span></div></span>
+        <span class="meta">471 KB</span>
       </button>
       <div id="toolbar">
         <button class="tool-btn" id="btn-wireframe">Wireframe <span class="kbd">W</span></button>
         <button class="tool-btn" id="btn-rotate">Auto-Rotate <span class="kbd">R</span></button>
         <button class="tool-btn" id="btn-normals">Normals <span class="kbd">N</span></button>
+        <button class="tool-btn" id="btn-skeleton">Skeleton <span class="kbd">B</span></button>
         <button class="tool-btn" id="btn-compare">Compare <span class="kbd">C</span></button>
         <button class="tool-btn" id="btn-screenshot">Screenshot <span class="kbd">S</span></button>
         <button class="tool-btn" id="btn-fullscreen">Fullscreen <span class="kbd">F</span></button>
@@ -223,7 +253,7 @@
     <div class="hud-panel" id="info-panel-right"></div>
     <div id="controls-hint">
       <kbd>LMB</kbd> Rotate &bull; <kbd>Scroll</kbd> Zoom &bull; <kbd>RMB</kbd> Pan<br>
-      <kbd>1</kbd>-<kbd>9</kbd> Models &bull; <kbd>W</kbd> Wire &bull; <kbd>R</kbd> Rotate &bull; <kbd>C</kbd> Compare &bull; <kbd>S</kbd> Screenshot
+      <kbd>1</kbd>-<kbd>9</kbd> Models &bull; <kbd>W</kbd> Wire &bull; <kbd>N</kbd> Normals &bull; <kbd>B</kbd> Skeleton &bull; <kbd>R</kbd> Rotate &bull; <kbd>C</kbd> Compare &bull; <kbd>S</kbd> Screenshot
     </div>
     <div id="compare-overlay">
       <div class="compare-select-wrap">
@@ -558,6 +588,8 @@
     let currentModelSize = new THREE.Vector3();
     let wireframeOn = false;
     let normalsOn = false;
+    let skeletonOn = false;
+    let skeletonHelper = null;
     let autoRotate = false;
     let compareMode = false;
     let compareModelLeft = null;
@@ -733,7 +765,7 @@
 
     // ── Build info HUD ──
     function buildInfoHTML(model, path) {
-      let meshCount = 0, vertexCount = 0, triangleCount = 0, hasTextures = false;
+      let meshCount = 0, vertexCount = 0, triangleCount = 0, hasTextures = false, jointCount = 0;
       model.traverse(child => {
         if (child.isMesh) {
           meshCount++;
@@ -741,14 +773,18 @@
           triangleCount += child.geometry.index ? child.geometry.index.count / 3 : child.geometry.attributes.position.count / 3;
           if (child.material.map || (Array.isArray(child.material) && child.material.some(m => m.map))) hasTextures = true;
         }
+        if (child.isSkinnedMesh && child.skeleton) jointCount = child.skeleton.bones.length;
       });
       const box = new THREE.Box3().setFromObject(model);
       const size = box.getSize(new THREE.Vector3());
       const fileName = path.split('/').pop().replace('.glb', '');
-      return `<div class="filename">${fileName}</div>` +
+      let html = `<div class="filename">${fileName}</div>` +
         `<div class="stat"><b>${meshCount}</b> meshes &bull; <b>${vertexCount.toLocaleString()}</b> verts &bull; <b>${Math.round(triangleCount).toLocaleString()}</b> tris</div>` +
         `<div class="stat">Bounds: <b>${size.x.toFixed(2)}</b> &times; <b>${size.y.toFixed(2)}</b> &times; <b>${size.z.toFixed(2)}</b></div>` +
-        `<div class="stat">Textures: <b>${hasTextures ? 'Yes' : 'None'}</b></div>`;
+        `<div class="stat">Textures: <b>${hasTextures ? 'Yes' : 'None'}</b>`;
+      if (jointCount > 0) html += ` &bull; Skeleton: <b>${jointCount}</b> joints`;
+      html += `</div>`;
+      return html;
     }
 
     // ── Center model in scene ──
@@ -762,12 +798,15 @@
     }
 
     // ── Fit camera to model ──
-    function fitCamera(size) {
+    let cameraAnim = null;
+
+    function fitCamera(size, animate = true) {
       const maxDim = Math.max(size.x, size.y, size.z);
       const fitDist = maxDim / (2 * Math.tan((camera.fov * Math.PI) / 360));
-      controls.target.set(0, size.y / 2, 0);
-      camera.position.set(0, size.y * 0.6, fitDist * 1.4);
-      controls.update();
+
+      const targetPos = new THREE.Vector3(0, size.y * 0.6, fitDist * 1.4);
+      const targetLook = new THREE.Vector3(0, size.y / 2, 0);
+
       // Fit shadow camera
       const kl = scene.userData.keyLight;
       if (kl) {
@@ -777,6 +816,42 @@
         kl.shadow.camera.bottom = -maxDim * 0.5;
         kl.shadow.camera.updateProjectionMatrix();
       }
+
+      if (!animate) {
+        controls.target.copy(targetLook);
+        camera.position.copy(targetPos);
+        controls.update();
+        return;
+      }
+
+      // Cinematic intro: start further back and slightly to the side, then ease in
+      const startPos = new THREE.Vector3(
+        fitDist * 0.6,
+        size.y * 0.9,
+        fitDist * 2.2
+      );
+      const startLook = new THREE.Vector3(0, size.y * 0.4, 0);
+
+      camera.position.copy(startPos);
+      controls.target.copy(startLook);
+      controls.update();
+
+      const duration = 1400; // ms
+      const startTime = performance.now();
+      if (cameraAnim) cancelAnimationFrame(cameraAnim);
+
+      function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+      function step(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const e = easeOutCubic(t);
+        camera.position.lerpVectors(startPos, targetPos, e);
+        controls.target.lerpVectors(startLook, targetLook, e);
+        controls.update();
+        if (t < 1) cameraAnim = requestAnimationFrame(step);
+        else cameraAnim = null;
+      }
+      cameraAnim = requestAnimationFrame(step);
     }
 
     // ── Dispose model ──
@@ -892,6 +967,36 @@
       if (!on) savedMaterials.clear();
     }
 
+    // ── Skeleton Visualization ──
+    function showSkeleton(obj, on) {
+      if (skeletonHelper) {
+        scene.remove(skeletonHelper);
+        skeletonHelper.dispose();
+        skeletonHelper = null;
+      }
+      if (!obj || !on) return;
+      // Find SkinnedMesh in the scene graph
+      let skinnedMesh = null;
+      obj.traverse(child => {
+        if (child.isSkinnedMesh && !skinnedMesh) skinnedMesh = child;
+      });
+      if (!skinnedMesh || !skinnedMesh.skeleton) return;
+      skeletonHelper = new THREE.SkeletonHelper(skinnedMesh);
+      skeletonHelper.material.linewidth = 2;
+      skeletonHelper.material.color.set(0x7c4dca);
+      skeletonHelper.material.transparent = true;
+      skeletonHelper.material.opacity = 0.8;
+      skeletonHelper.material.depthTest = false;
+      scene.add(skeletonHelper);
+    }
+
+    function hasSkeletonData(obj) {
+      if (!obj) return false;
+      let found = false;
+      obj.traverse(child => { if (child.isSkinnedMesh) found = true; });
+      return found;
+    }
+
     // ── Screenshot ──
     function takeScreenshot() {
       renderer.render(scene, camera);
@@ -963,7 +1068,7 @@
 
       if (compareModelLeft) {
         infoPanel.innerHTML = buildInfoHTML(compareModelLeft, leftModel.path);
-        fitCamera(compareLeftSize);
+        fitCamera(compareLeftSize, false);
       }
       if (compareModelRight) {
         infoPanelRight.innerHTML = buildInfoHTML(compareModelRight, rightModel.path);
@@ -982,6 +1087,7 @@
         btn.classList.add('active');
         if (normalsOn) { normalsOn = false; document.getElementById('btn-normals').classList.remove('active'); savedMaterials.clear(); }
         if (wireframeOn) { wireframeOn = false; document.getElementById('btn-wireframe').classList.remove('active'); }
+        if (skeletonOn) { skeletonOn = false; showSkeleton(null, false); document.getElementById('btn-skeleton').classList.remove('active'); }
         loadModel(btn.dataset.model);
       });
     });
@@ -1007,6 +1113,13 @@
       document.getElementById('btn-normals').classList.toggle('active', normalsOn);
       if (wireframeOn) { wireframeOn = false; setWireframe(currentModel, false); document.getElementById('btn-wireframe').classList.remove('active'); }
       setNormals(currentModel, normalsOn);
+    });
+
+    document.getElementById('btn-skeleton').addEventListener('click', () => {
+      if (!hasSkeletonData(currentModel)) return;
+      skeletonOn = !skeletonOn;
+      document.getElementById('btn-skeleton').classList.toggle('active', skeletonOn);
+      showSkeleton(currentModel, skeletonOn);
     });
 
     document.getElementById('btn-compare').addEventListener('click', () => {
@@ -1043,6 +1156,7 @@
         case 'w': document.getElementById('btn-wireframe').click(); break;
         case 'r': document.getElementById('btn-rotate').click(); break;
         case 'n': document.getElementById('btn-normals').click(); break;
+        case 'b': document.getElementById('btn-skeleton').click(); break;
         case 'c': document.getElementById('btn-compare').click(); break;
         case 's': e.preventDefault(); takeScreenshot(); break;
         case 'f': document.getElementById('btn-fullscreen').click(); break;
@@ -1173,6 +1287,9 @@
       }
     }
     animate();
+
+    // ── Auto-load showcase model on startup ──
+    modelBtns[0].click();
   </script>
 </body>
 </html>
