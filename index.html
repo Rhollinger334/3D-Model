@@ -1278,29 +1278,6 @@
     compareLeftSelect.addEventListener('change', () => { if (compareMode) loadCompareModels(); });
     compareRightSelect.addEventListener('change', () => { if (compareMode) loadCompareModels(); });
 
-    // ── Model Buttons ──
-    const modelBtns = document.querySelectorAll('.model-btn');
-    modelBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        if (compareMode) exitCompareMode();
-        modelBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if (normalsOn) { normalsOn = false; document.getElementById('btn-normals').classList.remove('active'); savedMaterials.clear(); }
-        if (wireframeOn) { wireframeOn = false; document.getElementById('btn-wireframe').classList.remove('active'); }
-        if (skeletonOn) { skeletonOn = false; showSkeleton(null, false); document.getElementById('btn-skeleton').classList.remove('active'); }
-
-        // Cinematic mode: activate when the Alive cinematic button is clicked
-        const isCinematic = btn.dataset.cinematic === 'true';
-        if (isCinematic && !cinematicMode) {
-          enterCinematicMode();
-        } else if (!isCinematic && cinematicMode) {
-          exitCinematicMode();
-        }
-
-        loadModel(btn.dataset.model);
-      });
-    });
-
     // ── Cinematic Mode ──
     function enterCinematicMode() {
       cinematicMode = true;
@@ -1340,6 +1317,29 @@
       // Restore default exposure
       renderer.toneMappingExposure = 0.90;
     }
+
+    // ── Model Buttons ──
+    const modelBtns = document.querySelectorAll('.model-btn');
+    modelBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (compareMode) exitCompareMode();
+        modelBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (normalsOn) { normalsOn = false; document.getElementById('btn-normals').classList.remove('active'); savedMaterials.clear(); }
+        if (wireframeOn) { wireframeOn = false; document.getElementById('btn-wireframe').classList.remove('active'); }
+        if (skeletonOn) { skeletonOn = false; showSkeleton(null, false); document.getElementById('btn-skeleton').classList.remove('active'); }
+
+        // Cinematic mode: activate when the Alive cinematic button is clicked
+        const isCinematic = btn.dataset.cinematic === 'true';
+        if (isCinematic && !cinematicMode) {
+          enterCinematicMode();
+        } else if (!isCinematic && cinematicMode) {
+          exitCinematicMode();
+        }
+
+        loadModel(btn.dataset.model);
+      });
+    });
 
     // ── Toolbar ──
     document.getElementById('btn-wireframe').addEventListener('click', () => {
