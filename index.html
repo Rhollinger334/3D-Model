@@ -158,6 +158,10 @@
       <div class="subtitle">Overwatch Model Archive</div>
     </div>
     <div id="sidebar-scroll">
+      <div class="section-label">Showcase</div>
+      <button class="model-btn" data-model="widowmaker.glb" data-key="showcase">
+        <span class="icon">&#9733;</span><span class="label">OW1 Showcase (Rigged)</span><span class="meta">3.5 MB</span>
+      </button>
       <div class="section-label">Overwatch 1</div>
       <button class="model-btn" data-model="models/OW1/Widowmaker_OW1_Textured_Default.glb" data-key="ow1_full">
         <span class="icon">&#9670;</span><span class="label">Default Skin</span><span class="meta">1.4 MB</span>
@@ -219,7 +223,7 @@
     <div class="hud-panel" id="info-panel-right"></div>
     <div id="controls-hint">
       <kbd>LMB</kbd> Rotate &bull; <kbd>Scroll</kbd> Zoom &bull; <kbd>RMB</kbd> Pan<br>
-      <kbd>1</kbd>-<kbd>8</kbd> Models &bull; <kbd>W</kbd> Wire &bull; <kbd>R</kbd> Rotate &bull; <kbd>C</kbd> Compare &bull; <kbd>S</kbd> Screenshot
+      <kbd>1</kbd>-<kbd>9</kbd> Models &bull; <kbd>W</kbd> Wire &bull; <kbd>R</kbd> Rotate &bull; <kbd>C</kbd> Compare &bull; <kbd>S</kbd> Screenshot
     </div>
     <div id="compare-overlay">
       <div class="compare-select-wrap">
@@ -332,6 +336,7 @@
 
     // ── Model registry ──
     const MODEL_LIST = [
+      { path: 'widowmaker.glb', name: 'OW1 Showcase (Rigged)' },
       { path: 'models/OW1/Widowmaker_OW1_Textured_Default.glb', name: 'OW1 Default Skin' },
       { path: 'models/OW1/Widowmaker_OW1_Textured_Noire.glb', name: 'OW1 Noire Skin' },
       { path: 'models/OW1/Widowmaker_OW1_Full_Body.glb', name: 'OW1 Full Body' },
@@ -362,7 +367,7 @@
       compareLeftSelect.innerHTML += `<option value="${i}">${m.name}</option>`;
       compareRightSelect.innerHTML += `<option value="${i}">${m.name}</option>`;
     });
-    compareRightSelect.value = '5'; // Default right to Talon
+    compareRightSelect.value = '6'; // Default right to Talon
 
     // ── Renderer ──
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
@@ -532,24 +537,20 @@
     addLights(sceneRight);
 
     // ── Post-Processing (Cinematic Pipeline) ──
-    const composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
+    function createComposer(targetScene) {
+      const comp = new EffectComposer(renderer);
+      comp.addPass(new RenderPass(targetScene, camera));
+      comp.addPass(new UnrealBloomPass(
+        new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.18, 0.5, 0.75
+      ));
+      comp.addPass(new SMAAPass(canvas.clientWidth, canvas.clientHeight));
+      comp.addPass(new ShaderPass(CinematicGradingShader));
+      comp.addPass(new OutputPass());
+      return comp;
+    }
 
-    // Bloom — slightly stronger for cinematic glow on specular highlights and rim light
-    const bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(canvas.clientWidth, canvas.clientHeight), 0.18, 0.5, 0.75
-    );
-    composer.addPass(bloomPass);
-
-    // SMAA anti-aliasing
-    composer.addPass(new SMAAPass(canvas.clientWidth, canvas.clientHeight));
-
-    // Cinematic color grading + vignette (Alive style)
-    const gradingPass = new ShaderPass(CinematicGradingShader);
-    composer.addPass(gradingPass);
-
-    // Output
-    composer.addPass(new OutputPass());
+    const composer = createComposer(scene);
+    const composerRight = createComposer(sceneRight);
 
     // ── State ──
     const loader = new GLTFLoader();
@@ -922,6 +923,7 @@
       // Hide single-mode model
       if (currentModel) { scene.remove(currentModel); disposeModel(currentModel); currentModel = null; }
 
+      onResize();
       await loadCompareModels();
     }
 
@@ -938,6 +940,7 @@
       if (compareModelLeft) { scene.remove(compareModelLeft); disposeModel(compareModelLeft); compareModelLeft = null; }
       if (compareModelRight) { sceneRight.remove(compareModelRight); disposeModel(compareModelRight); compareModelRight = null; }
 
+      onResize();
       infoPanel.innerHTML = 'Select a model from the sidebar.';
     }
 
@@ -1035,7 +1038,7 @@
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
       const key = e.key.toLowerCase();
-      if (key >= '1' && key <= '8') { const idx = parseInt(key) - 1; if (idx < modelBtns.length) modelBtns[idx].click(); return; }
+      if (key >= '1' && key <= '9') { const idx = parseInt(key) - 1; if (idx < modelBtns.length) modelBtns[idx].click(); return; }
       switch (key) {
         case 'w': document.getElementById('btn-wireframe').click(); break;
         case 'r': document.getElementById('btn-rotate').click(); break;
@@ -1125,8 +1128,15 @@
     function onResize() {
       const w = canvas.clientWidth, h = canvas.clientHeight;
       renderer.setSize(w, h);
-      composer.setSize(w, h);
-      camera.aspect = compareMode ? (w / 2) / h : w / h;
+      if (compareMode) {
+        const halfW = Math.floor(w / 2);
+        composer.setSize(halfW, h);
+        composerRight.setSize(halfW, h);
+        camera.aspect = halfW / h;
+      } else {
+        composer.setSize(w, h);
+        camera.aspect = w / h;
+      }
       camera.updateProjectionMatrix();
     }
     window.addEventListener('resize', onResize);
@@ -1146,15 +1156,15 @@
 
         renderer.setScissorTest(true);
 
-        // Left viewport
+        // Left viewport — cinematic post-processing
         renderer.setViewport(0, 0, halfW, h);
         renderer.setScissor(0, 0, halfW, h);
-        renderer.render(scene, camera);
+        composer.render();
 
-        // Right viewport
+        // Right viewport — cinematic post-processing
         renderer.setViewport(halfW, 0, halfW, h);
         renderer.setScissor(halfW, 0, halfW, h);
-        renderer.render(sceneRight, camera);
+        composerRight.render();
 
         renderer.setScissorTest(false);
         renderer.setViewport(0, 0, w, h);
