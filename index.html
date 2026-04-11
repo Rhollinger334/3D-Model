@@ -527,11 +527,11 @@
     controls.update();
 
     // ── Cinematic "Alive" lighting setup ──
-    // Recreates the Paris rooftop night scene from the Overwatch "Alive" short:
+    // Recreates the King's Row rooftop night scene from the Overwatch "Alive" short:
     // - Cool moonlight as primary key (upper-right, casting hard shadows)
-    // - Deep teal city-ambient fill from left
+    // - Deep teal city-ambient fill from left (London night glow)
     // - Strong cool rim light defining silhouette edges
-    // - Warm amber accent from below-right (city lamp glow)
+    // - Warm amber accent from below-right (King's Row street lamps)
     // - Focused face/hair specular catches
     function addLights(targetScene) {
       // Very dim cool ambient — deep night scene, high shadow-to-light ratio
@@ -576,7 +576,7 @@
       rim2.position.set(3, 3, -4);
       targetScene.add(rim2);
 
-      // ACCENT LIGHT — warm amber from below-right (Paris city lights / lamp glow)
+      // ACCENT LIGHT — warm amber from below-right (King's Row street lamp glow)
       const accent = new THREE.DirectionalLight(0xd4935a, 0.35);
       accent.position.set(4, 0.5, 2);
       targetScene.add(accent);
@@ -650,12 +650,14 @@
     let compareRightSize = new THREE.Vector3();
 
     // ── Cinematic material enhancement ──
-    // "Alive" cinematic color palette
-    const SKIN_COLOR = new THREE.Color(0.65, 0.68, 0.78);    // cooler blue-purple skin (cinematic)
-    const SKIN_SSS_TINT = new THREE.Color(0.35, 0.28, 0.55); // deep purple SSS (visible in thin areas)
-    const HAIR_COLOR = new THREE.Color(0.04, 0.01, 0.12);     // very deep indigo, almost black
-    const SUIT_COLOR = new THREE.Color(0.06, 0.04, 0.12);     // near-black with purple undertone
-    const EYE_GLOW = new THREE.Color(1.0, 0.75, 0.15);       // amber-gold eye color from cinematic
+    // "Alive" cinematic color palette — matched to official Blizzard reference sheet
+    // Official skin hex: #b1b4db (periwinkle blue-purple, cyanotic from slowed heart)
+    // Under moonlit King's Row night scene, skin reads even cooler/bluer
+    const SKIN_COLOR = new THREE.Color(0.694, 0.706, 0.859);  // #b1b4db official reference
+    const SKIN_SSS_TINT = new THREE.Color(0.30, 0.22, 0.52);  // cool purple SSS bleed (visible in thin areas: ears, nose)
+    const HAIR_COLOR = new THREE.Color(0.02, 0.01, 0.10);     // very deep dark blue/indigo, almost black
+    const SUIT_COLOR = new THREE.Color(0.05, 0.03, 0.10);     // "shiny dark black and purple bodysuit" (official desc)
+    const EYE_GLOW = new THREE.Color(1.0, 0.82, 0.18);        // yellow/amber eye glow — confirmed official
 
     function classifyMaterial(matName, modelPath) {
       const n = matName.toLowerCase();
@@ -688,20 +690,21 @@
 
       switch (matClass) {
         case 'skin':
-          // Alive cinematic skin: cool blue-purple, visible SSS in thin areas
-          phys.roughness = 0.4;
+          // Official skin: #b1b4db periwinkle blue-purple (cyanotic)
+          // SSS visible in thin areas (ears, nose bridge)
+          phys.roughness = 0.35;
           phys.metalness = 0.0;
-          phys.clearcoat = 0.08;
-          phys.clearcoatRoughness = 0.3;
-          phys.sheen = 0.5;
-          phys.sheenRoughness = 0.4;
+          phys.clearcoat = 0.12;
+          phys.clearcoatRoughness = 0.2;
+          phys.sheen = 0.6;
+          phys.sheenRoughness = 0.3;
           phys.sheenColor = SKIN_SSS_TINT;
-          phys.envMapIntensity = 1.0;
+          phys.envMapIntensity = 1.2;
           if (!phys.map) phys.color.copy(SKIN_COLOR);
           break;
 
         case 'eyes':
-          // Alive cinematic eyes: amber-gold glow, wet reflective cornea
+          // Official: yellow/amber eyes with subtle glow in dark scenes
           phys.roughness = 0.05;
           phys.metalness = 0.0;
           phys.clearcoat = 1.0;
@@ -709,17 +712,18 @@
           phys.envMapIntensity = 2.0;
           phys.ior = 1.45;
           phys.emissive = EYE_GLOW;
-          phys.emissiveIntensity = 0.15;
+          phys.emissiveIntensity = 0.20;
           break;
 
         case 'hair':
-          // Near-black indigo with cool specular highlights
-          phys.roughness = 0.45;
-          phys.metalness = 0.08;
+          // Official: dark blue/indigo hair, near-black
+          // Cool moonlight creates specular band along strands
+          phys.roughness = 0.40;
+          phys.metalness = 0.10;
           phys.sheen = 1.0;
-          phys.sheenRoughness = 0.25;
-          phys.sheenColor = new THREE.Color(0.15, 0.12, 0.35);
-          phys.envMapIntensity = 0.8;
+          phys.sheenRoughness = 0.22;
+          phys.sheenColor = new THREE.Color(0.12, 0.10, 0.35); // cool blue specular
+          phys.envMapIntensity = 0.9;
           if (!phys.map) phys.color.copy(HAIR_COLOR);
           break;
 
@@ -740,30 +744,32 @@
           break;
 
         case 'body':
-          // Suit: near-black, glossy, strong specular catches on rim light
-          phys.roughness = 0.2;
-          phys.metalness = 0.25;
-          phys.clearcoat = 0.5;
-          phys.clearcoatRoughness = 0.08;
-          phys.envMapIntensity = 1.5;
-          phys.sheen = 0.3;
-          phys.sheenRoughness = 0.3;
-          phys.sheenColor = new THREE.Color(0.1, 0.08, 0.2);
+          // Official: "shiny dark black and purple bodysuit"
+          // Glossy latex-like, strong specular catches on rim light
+          phys.roughness = 0.15;
+          phys.metalness = 0.30;
+          phys.clearcoat = 0.6;
+          phys.clearcoatRoughness = 0.06;
+          phys.envMapIntensity = 1.8;
+          phys.sheen = 0.35;
+          phys.sheenRoughness = 0.25;
+          phys.sheenColor = new THREE.Color(0.10, 0.06, 0.22);
           if (!phys.map) phys.color.copy(SUIT_COLOR);
           break;
 
         // ── Showcase model: Hyper-realistic "Alive" cinematic materials ──
         case 'showcase_skin':
-          // Widowmaker's signature blue-purple skin under moonlight
-          // SSS approximation via sheen, subtle wet clearcoat, micro-roughness
-          phys.roughness = 0.32;
+          // Widowmaker's signature cyanotic blue-purple skin (#b1b4db)
+          // Under King's Row moonlight, skin reads cool periwinkle
+          // SSS approximation via sheen — purple bleed visible in thin areas
+          phys.roughness = 0.30;
           phys.metalness = 0.0;
-          phys.clearcoat = 0.15;
-          phys.clearcoatRoughness = 0.18;
-          phys.sheen = 0.7;
-          phys.sheenRoughness = 0.28;
-          phys.sheenColor = new THREE.Color(0.40, 0.22, 0.55); // deep purple SSS bleed
-          phys.envMapIntensity = 1.3;
+          phys.clearcoat = 0.18;
+          phys.clearcoatRoughness = 0.15;
+          phys.sheen = 0.75;
+          phys.sheenRoughness = 0.25;
+          phys.sheenColor = SKIN_SSS_TINT; // cool purple SSS bleed
+          phys.envMapIntensity = 1.4;
           phys.ior = 1.38; // skin IOR
           break;
 
@@ -792,15 +798,16 @@
           break;
 
         case 'showcase_iris':
-          // Amber-gold iris from "Alive" — faint emissive glow visible in darkness
-          phys.roughness = 0.06;
+          // Yellow/amber iris — officially confirmed, visible glow in darkness
+          // In "Alive" night scenes, her eyes have a subtle but unmistakable glow
+          phys.roughness = 0.05;
           phys.metalness = 0.0;
           phys.clearcoat = 1.0;
           phys.clearcoatRoughness = 0.01;
-          phys.envMapIntensity = 1.8;
+          phys.envMapIntensity = 2.0;
           phys.ior = 1.45;
           phys.emissive = EYE_GLOW;
-          phys.emissiveIntensity = 0.25;
+          phys.emissiveIntensity = 0.30;
           break;
 
         case 'showcase_cornea':
