@@ -181,6 +181,51 @@
     }
     #compare-label-left { left: 16px; }
     #compare-label-right { right: 16px; }
+
+    /* Animation controls */
+    #anim-controls { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #1a1a4e; }
+    #anim-controls.visible { display: block; }
+    #anim-controls .section-label { margin-top: 0; }
+    #anim-select {
+      width: 100%; padding: 6px 8px; background: #0f3460; border: 1px solid #1a1a4e;
+      color: #ccc; border-radius: 4px; font-size: 0.75rem; font-family: inherit; margin-bottom: 6px; cursor: pointer;
+    }
+    #anim-select option { background: #16213e; color: #e0e0e0; }
+    #anim-playback { display: flex; gap: 4px; align-items: center; }
+    #anim-playback .tool-btn { min-width: 0; text-align: center; }
+    #anim-time {
+      flex: 1; height: 4px; -webkit-appearance: none; appearance: none;
+      background: #0f3460; border-radius: 2px; outline: none; cursor: pointer;
+    }
+    #anim-time::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 12px; height: 12px;
+      background: #e94560; border-radius: 50%; cursor: pointer;
+    }
+    #anim-speed { font-size: 0.65rem; color: #666; text-align: center; min-width: 32px; }
+
+    /* Mobile sidebar toggle */
+    #sidebar-toggle {
+      display: none; position: absolute; top: 12px; left: 12px; z-index: 25;
+      background: rgba(15, 20, 40, 0.9); backdrop-filter: blur(10px);
+      border: 1px solid rgba(233, 69, 96, 0.3); color: #e94560;
+      width: 40px; height: 40px; border-radius: 8px; cursor: pointer;
+      font-size: 1.2rem; align-items: center; justify-content: center;
+    }
+    #sidebar-toggle:hover { background: rgba(30, 40, 70, 0.95); border-color: #e94560; }
+    #sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 19; }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        position: fixed; z-index: 20; height: 100vh;
+        transform: translateX(-100%); transition: transform 0.3s ease;
+      }
+      #sidebar.open { transform: translateX(0); }
+      #sidebar-toggle { display: flex; }
+      #sidebar-backdrop.open { display: block; }
+      #controls-hint { display: none; }
+      .hud-panel { max-width: 220px; font-size: 0.7rem; padding: 10px 12px; }
+      #info-panel { bottom: 10px; left: 10px; }
+    }
   </style>
 </head>
 <body>
@@ -249,6 +294,15 @@
         <button class="tool-btn" id="btn-fullscreen">Fullscreen <span class="kbd">F</span></button>
         <button class="tool-btn" id="btn-reset">Reset Camera <span class="kbd">0</span></button>
       </div>
+      <div id="anim-controls">
+        <div class="section-label" style="margin-top:0;">Animation</div>
+        <select id="anim-select"></select>
+        <div id="anim-playback">
+          <button class="tool-btn" id="btn-anim-toggle">&#9654; Play</button>
+          <input type="range" id="anim-time" min="0" max="1" step="0.001" value="0">
+          <span id="anim-speed">1x</span>
+        </div>
+      </div>
       <div class="section-label">Background</div>
       <div id="bg-selector">
         <div class="bg-swatch active" data-bg="dark" style="background:#0c0c1a;" title="Cinematic"></div>
@@ -263,6 +317,8 @@
     </div>
   </div>
   <div id="viewer">
+    <button id="sidebar-toggle">&#9776;</button>
+    <div id="sidebar-backdrop"></div>
     <canvas id="canvas"></canvas>
     <div id="loading">
       <div class="spinner-ring"></div>
@@ -273,7 +329,7 @@
     <div class="hud-panel" id="info-panel">Select a model from the sidebar to begin.</div>
     <div class="hud-panel" id="info-panel-right"></div>
     <div id="controls-hint">
-      <kbd>LMB</kbd> Rotate &bull; <kbd>Scroll</kbd> Zoom &bull; <kbd>RMB</kbd> Pan<br>
+      <kbd>LMB</kbd> Rotate &bull; <kbd>Scroll</kbd> Zoom &bull; <kbd>RMB</kbd> Pan &bull; <kbd>Space</kbd> Play/Pause<br>
       <kbd>1</kbd>-<kbd>9</kbd> Models &bull; <kbd>W</kbd> Wire &bull; <kbd>N</kbd> Normals &bull; <kbd>B</kbd> Skeleton &bull; <kbd>R</kbd> Rotate &bull; <kbd>C</kbd> Compare &bull; <kbd>S</kbd> Screenshot
     </div>
     <div id="compare-overlay">
@@ -669,6 +725,52 @@
     let compareModelRight = null;
     let compareLeftSize = new THREE.Vector3();
     let compareRightSize = new THREE.Vector3();
+    let mixer = null;
+    let currentAnimations = [];
+    let animationPlaying = false;
+    const animationClock = new THREE.Clock();
+    let loadId = 0;
+
+    // ── Animation UI Elements ──
+    const animControls = document.getElementById('anim-controls');
+    const animSelect = document.getElementById('anim-select');
+    const animTimeSlider = document.getElementById('anim-time');
+    const animToggleBtn = document.getElementById('btn-anim-toggle');
+    const animSpeedLabel = document.getElementById('anim-speed');
+    let animSpeed = 1.0;
+
+    function updateAnimationUI() {
+      if (currentAnimations.length === 0) {
+        animControls.classList.remove('visible');
+        return;
+      }
+      animControls.classList.add('visible');
+      animSelect.innerHTML = '';
+      currentAnimations.forEach((clip, i) => {
+        const name = clip.name || `Animation ${i + 1}`;
+        const dur = clip.duration.toFixed(1);
+        animSelect.innerHTML += `<option value="${i}">${name} (${dur}s)</option>`;
+      });
+      animToggleBtn.innerHTML = animationPlaying ? '&#10074;&#10074; Pause' : '&#9654; Play';
+    }
+
+    function playAnimation(index) {
+      if (!mixer || !currentAnimations[index]) return;
+      mixer.stopAllAction();
+      const action = mixer.clipAction(currentAnimations[index]);
+      action.play();
+      animationPlaying = true;
+      animationClock.getDelta(); // reset delta
+      updateAnimationUI();
+    }
+
+    function stopAnimation() {
+      if (!mixer) return;
+      mixer.stopAllAction();
+      animationPlaying = false;
+      animTimeSlider.value = 0;
+      updateAnimationUI();
+    }
 
     // ── Cinematic material enhancement ──
     // "Alive" cinematic color palette — matched to official Blizzard reference sheet
@@ -972,6 +1074,7 @@
         `<div class="stat">Bounds: <b>${size.x.toFixed(2)}</b> &times; <b>${size.y.toFixed(2)}</b> &times; <b>${size.z.toFixed(2)}</b></div>` +
         `<div class="stat">Textures: <b>${hasTextures ? 'Yes' : 'None'}</b>`;
       if (jointCount > 0) html += ` &bull; Skeleton: <b>${jointCount}</b> joints`;
+      if (currentAnimations.length > 0) html += ` &bull; Animations: <b>${currentAnimations.length}</b>`;
       html += `</div>`;
       return html;
     }
@@ -1067,13 +1170,21 @@
 
     // ── Load Model (single view) ──
     function loadModel(path) {
+      const thisLoadId = ++loadId;
       loadingEl.style.display = 'block';
       progressBar.style.width = '0%';
       progressText.textContent = '0%';
+
+      // Clean up previous model and animations
+      if (mixer) { mixer.stopAllAction(); mixer = null; }
+      currentAnimations = [];
+      animationPlaying = false;
+      updateAnimationUI();
       if (currentModel) { scene.remove(currentModel); disposeModel(currentModel); currentModel = null; }
 
       loader.load(path,
         (gltf) => {
+          if (thisLoadId !== loadId) return; // stale load — user clicked another model
           try {
             currentModel = gltf.scene;
             fixMaterials(currentModel, path);
@@ -1084,6 +1195,14 @@
             const size = centerModel(currentModel, currentModelSize);
             fitCamera(size);
             infoPanel.innerHTML = buildInfoHTML(currentModel, path);
+
+            // Handle animations
+            if (gltf.animations && gltf.animations.length > 0) {
+              mixer = new THREE.AnimationMixer(currentModel);
+              currentAnimations = gltf.animations;
+              playAnimation(0);
+            }
+            updateAnimationUI();
           } catch (e) {
             console.error('Model setup error:', e);
             infoPanel.innerHTML = `<div class="filename" style="color:#ff6b6b;">Setup Error</div><div class="stat">${e.message}</div>`;
@@ -1091,6 +1210,7 @@
           loadingEl.style.display = 'none';
         },
         (event) => {
+          if (thisLoadId !== loadId) return;
           if (event.lengthComputable) {
             const pct = Math.round((event.loaded / event.total) * 100);
             progressBar.style.width = pct + '%';
@@ -1101,6 +1221,7 @@
           }
         },
         (err) => {
+          if (thisLoadId !== loadId) return;
           loadingEl.style.display = 'none';
           infoPanel.innerHTML = `<div class="filename" style="color:#ff6b6b;">Error</div><div class="stat">${err.message || 'Unknown'}</div>`;
         }
@@ -1410,7 +1531,74 @@
         case 's': e.preventDefault(); takeScreenshot(); break;
         case 'f': document.getElementById('btn-fullscreen').click(); break;
         case '0': resetCamera(); break;
+        case ' ': e.preventDefault(); animToggleBtn.click(); break;
       }
+    });
+
+    // ── Animation Controls ──
+    animToggleBtn.addEventListener('click', () => {
+      if (currentAnimations.length === 0) return;
+      if (animationPlaying) {
+        if (mixer) mixer.timeScale = 0;
+        animationPlaying = false;
+      } else {
+        if (mixer) {
+          mixer.timeScale = animSpeed;
+          // If no action is running, start the selected animation
+          const actions = mixer._actions;
+          if (!actions || actions.length === 0) playAnimation(parseInt(animSelect.value) || 0);
+        }
+        animationPlaying = true;
+        animationClock.getDelta(); // reset delta
+      }
+      updateAnimationUI();
+    });
+
+    animSelect.addEventListener('change', () => {
+      if (currentAnimations.length === 0) return;
+      playAnimation(parseInt(animSelect.value));
+    });
+
+    animTimeSlider.addEventListener('input', () => {
+      if (!mixer || currentAnimations.length === 0) return;
+      const idx = parseInt(animSelect.value) || 0;
+      const clip = currentAnimations[idx];
+      if (!clip) return;
+      const time = parseFloat(animTimeSlider.value) * clip.duration;
+      mixer.setTime(time);
+      if (!animationPlaying) mixer.timeScale = 0;
+    });
+
+    // Speed cycling: click speed label to cycle 0.5x → 1x → 2x
+    animSpeedLabel.addEventListener('click', () => {
+      if (animSpeed === 1.0) animSpeed = 2.0;
+      else if (animSpeed === 2.0) animSpeed = 0.5;
+      else animSpeed = 1.0;
+      animSpeedLabel.textContent = animSpeed + 'x';
+      if (mixer && animationPlaying) mixer.timeScale = animSpeed;
+    });
+
+    // ── Mobile Sidebar Toggle ──
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebar = document.getElementById('sidebar');
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('open');
+      sidebarBackdrop.classList.toggle('open');
+    }
+
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    sidebarBackdrop.addEventListener('click', toggleSidebar);
+
+    // Close sidebar when a model is selected on mobile
+    modelBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('open');
+          sidebarBackdrop.classList.remove('open');
+        }
+      });
     });
 
     // ── Measurements Panel ──
@@ -1509,6 +1697,22 @@
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
+
+      // Update animation mixer
+      if (mixer && animationPlaying) {
+        const delta = animationClock.getDelta();
+        mixer.update(delta);
+
+        // Sync time slider
+        const idx = parseInt(animSelect.value) || 0;
+        const clip = currentAnimations[idx];
+        if (clip && clip.duration > 0) {
+          const actions = mixer._actions;
+          if (actions && actions.length > 0) {
+            animTimeSlider.value = (actions[0].time % clip.duration) / clip.duration;
+          }
+        }
+      }
 
       const w = canvas.clientWidth, h = canvas.clientHeight;
 
